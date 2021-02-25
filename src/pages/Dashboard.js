@@ -33,11 +33,10 @@ export default function Dashboard() {
 					ottimings: [
 						'04:00pm - 05:30pm',
 						'06:30pm - 08:00pm',
-						'09:00pm - 11:00pm',
 						'09:00pm - 11:00pm'
 					],
 					othours: '5',
-					locations: '',
+					locations: 'Family Food Centre, Al Maktab Hollandi',
 					status: 'REG'
 				},
 				{
@@ -78,58 +77,70 @@ export default function Dashboard() {
 	}, []);
 
 	// console.log(attendance);
+	
+	const Activity = (props) => {
+		
+		let { attend } = props;
+
+		return (
+			<Block
+				flex
+				borderless
+				style={styles.card}
+			>
+				<Block style={styles.cardHeader}>
+					<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
+					<Text p style={{ color: theme.COLORS.WHITE }}>{attend.status}</Text>
+				</Block>
+				<Block style={{ marginBottom: 10 }}>
+					<Block style={styles.row}>
+						<Block style={styles.col}>
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Day</Text>
+							{attend.timings.day_min && attend.timings.day_min.map((day, day_id) => (
+								<Text size={18} key={day_id} style={{ color: theme.COLORS.WHITE }}>{day}</Text>
+							))}
+						</Block>
+						<Block style={styles.col}>
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Noon</Text>
+							{attend.timings.noon_min && attend.timings.noon_min.map((noon, noon_id) => (
+								<Text size={18} key={noon_id} style={{ color: theme.COLORS.WHITE }}>{noon}</Text>
+							))}
+						</Block>
+					</Block>
+				</Block>
+				
+				{attend.locations !== '' ?
+				<Block>
+					<Text style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>
+						<Text size={20} bold>Overtime&nbsp;</Text>
+						<Text size={16}> - {attend.othours} Hours</Text>
+					</Text>
+					<Block style={{ height: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
+						{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
+							<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
+						))}
+					</Block>
+				</Block> : <Block></Block>}
+
+				{attend.locations !== '' ?
+				<Text style={{ color: theme.COLORS.WHITE }}>
+					<Icon name="location-pin" family="entypo" color="#fff" size={20} />
+					{/* <Text size={20} bold>Location: </Text> */}
+					<Text size={16}>{attend.locations}</Text>
+				</Text> : <Block></Block>}
+			</Block>
+		)
+	}
 
     return (
         <Block safe flex>
 			<NavBar title="Attendance" transparent />
-            <ScrollView style={{ marginBottom: 20 }}>
-				{/* <Block flex space="between" style={styles.section}> */}
-					{attendance && attendance.map((attend, id) => (
-						<Block
-							key={id}
-							flex
-							borderless
-                			style={styles.card}
-							// shadowColor={theme.COLORS.BLACK}
-							// titleColor={card.full ? theme.COLORS.WHITE : null}
-							// title={card.title}
-							// caption={card.caption}
-							// location={card.location}
-							// avatar={`${card.avatar}?${id}`}
-						>
-							<Block style={styles.cardHeader}>
-								<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
-								<Text p style={{ color: theme.COLORS.WHITE }}>{attend.status}</Text>
-							</Block>
-							<Block style={{ marginBottom: 10 }}>
-								<Block style={styles.row}>
-									<Block style={styles.col}>
-										<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Day</Text>
-										{attend.timings.day_min && attend.timings.day_min.map((day, day_id) => (
-											<Text size={18} key={day_id} style={{ color: theme.COLORS.WHITE }}>{day}</Text>
-										))}
-									</Block>
-									<Block style={styles.col}>
-										<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Noon</Text>
-										{attend.timings.noon_min && attend.timings.noon_min.map((noon, noon_id) => (
-											<Text size={18} key={noon_id} style={{ color: theme.COLORS.WHITE }}>{noon}</Text>
-										))}
-									</Block>
-								</Block>
-							</Block>
-							
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Overtime - {attend.othours} Hours</Text>
-							<Block style={{ borderWidth: 1, borderColor: 'red', height: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
-								{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
-									<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
-								))}
-							</Block>
-
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Location: </Text>
-							<Text style={{ color: theme.COLORS.WHITE }}>Location: </Text>
-						</Block>
-					))}
-            </ScrollView>
+				<FlatList
+					data={attendance}
+					keyExtractor={(item, index) => index.toString()}
+					renderItem={({item}) => <Activity attend={item} />}
+					style={{ marginBottom: 20 }}
+				/>
         </Block>
     );
 }

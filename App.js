@@ -14,8 +14,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Login from './src/pages/Login';
+import Dashboard from './src/pages/Dashboard';
 
 const App: () => React$Node = () => {
 	return (
