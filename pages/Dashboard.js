@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dimensions, ScrollView, StyleSheet } from 'react-native';
+import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
 
 import { Block, Card, Icon, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
@@ -24,12 +24,19 @@ export default function Dashboard() {
 							'10:30am - 12:00pm'
 						],
 						noon_min: [
+							'02:00pm - 03:30pm',
 							'04:00pm - 05:30pm',
-							'06:00pm - 07:30pm'
+							'06:30pm - 08:00pm',
+							'09:00pm - 11:00pm'
 						]
 					},
-					ottimings: {},
-					othours: '',
+					ottimings: [
+						'04:00pm - 05:30pm',
+						'06:30pm - 08:00pm',
+						'09:00pm - 11:00pm',
+						'09:00pm - 11:00pm'
+					],
+					othours: '5',
 					locations: '',
 					status: 'REG'
 				},
@@ -43,7 +50,7 @@ export default function Dashboard() {
 							'4:00pm - 5:30pm'
 						]
 					},
-					ottimings: {},
+					ottimings: [],
 					othours: '',
 					locations: '',
 					status: 'REG'
@@ -58,7 +65,7 @@ export default function Dashboard() {
 							'4:00pm - 5:30pm'
 						]
 					},
-					ottimings: {},
+					ottimings: [],
 					othours: '',
 					locations: '',
 					status: 'REG'
@@ -73,9 +80,9 @@ export default function Dashboard() {
 	// console.log(attendance);
 
     return (
-        <Block>
+        <Block safe flex>
 			<NavBar title="Attendance" transparent />
-            <ScrollView>
+            <ScrollView style={{ marginBottom: 20 }}>
 				{/* <Block flex space="between" style={styles.section}> */}
 					{attendance && attendance.map((attend, id) => (
 						<Block
@@ -94,7 +101,7 @@ export default function Dashboard() {
 								<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
 								<Text p style={{ color: theme.COLORS.WHITE }}>{attend.status}</Text>
 							</Block>
-							<Block>
+							<Block style={{ marginBottom: 10 }}>
 								<Block style={styles.row}>
 									<Block style={styles.col}>
 										<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Day</Text>
@@ -110,15 +117,18 @@ export default function Dashboard() {
 									</Block>
 								</Block>
 							</Block>
+							
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Overtime - {attend.othours} Hours</Text>
+							<Block style={{ borderWidth: 1, borderColor: 'red', height: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
+								{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
+									<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
+								))}
+							</Block>
+
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Location: </Text>
+							<Text style={{ color: theme.COLORS.WHITE }}>Location: </Text>
 						</Block>
 					))}
-				{/* </Block> */}
-				<Block flex space="between" style={styles.section}>
-					<Card
-						style={styles.card}>
-						<Text>A Different Section</Text>
-					</Card>
-				</Block>
             </ScrollView>
         </Block>
     );
@@ -152,6 +162,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	col: {
-		flexDirection: 'column',
+		flexDirection: 'column'
 	}
 });
