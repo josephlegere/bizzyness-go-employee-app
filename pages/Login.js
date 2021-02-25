@@ -33,7 +33,7 @@ export default function Login({ navigation }) {
 							placeholder="Email"
 							autoCapitalize="none"
 							style={{ width: width * 0.9 }}
-							onChangeText={text => this.handleChange('email', text)}
+							onChangeText={text => setEmail(text)}
 						/>
 						<Input
 							rounded
@@ -41,7 +41,7 @@ export default function Login({ navigation }) {
 							viewPass
 							placeholder="Password"
 							style={{ width: width * 0.9 }}
-							onChangeText={text => this.handleChange('password', text)}
+							onChangeText={text => setPassword(text)}
 						/>
 						<Button
 							round
