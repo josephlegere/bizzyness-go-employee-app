@@ -134,7 +134,13 @@ export default function Activities() {
 
     return (
         <Block safe flex>
-			<NavBar title="Attendance" transparent />
+			<NavBar
+                // title="Bizzyness"
+                transparent
+                left={(
+                    <Text bold size={22} color='black' >Bizzyness</Text>
+                )}
+                style={{ height: 50 }} />
 			<FlatList
 				data={attendance}
 				keyExtractor={(item, index) => index.toString()}
