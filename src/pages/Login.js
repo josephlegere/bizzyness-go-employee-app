@@ -80,7 +80,7 @@ export default function Login({ navigation }) {
 					</Block> */}
 				</Block>
 			</KeyboardAvoidingView>
-      </Block>
+      	</Block>
     );
 }
 
