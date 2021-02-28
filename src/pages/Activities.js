@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Card, Icon, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
 import theme from '../assets/theme';
 
+import { getUsers } from '../store/actions/users';
+
 const { height, width } = Dimensions.get('window');
 
 export default function Activities() {
 
     const [ attendance, setAttendance ] = useState([]);
+	const dispatch = useDispatch();
+    const usersList = useSelector(state => state.users);
+    const {loading, error, users} = usersList;
 
 	useEffect(() => {
 
@@ -70,11 +76,15 @@ export default function Activities() {
 					status: 'REG'
 				}
 			]);
+
+			dispatch(getUsers());
 		}
+
+		
 		
 		getAttendance();
 
-	}, []);
+	}, [dispatch]);
 
 	// console.log(attendance);
 	
