@@ -1,4 +1,4 @@
-import {GET_USERS, USERS_ERROR} from '../types'
+import { GET_ATTENDANCE, ATTENDANCE_ERROR } from '../types'
 
 const initialState = {
     list: [],
@@ -9,14 +9,14 @@ export default function(state = initialState, action) {
 
     switch (action.type) {
 
-        case GET_USERS:
+        case GET_ATTENDANCE:
             return {
                 ...state,
                 list: action.payload,
                 loading: false
 
             }
-        case USERS_ERROR:
+        case ATTENDANCE_ERROR:
             return {
                 loading: false, 
                 error: action.payload 

@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import theme from '../assets/theme';
 
-import { getUsers } from '../store/actions/users';
+import { getAttendance } from '../store/actions/attendance';
 
 const { height, width } = Dimensions.get('window');
 
@@ -20,7 +20,7 @@ export default function Activities() {
 
 	useEffect(() => {
 
-		function getAttendance () {
+		function fetchAttendance () {
 			setAttendance([
 				{
 					date: '2021-02-27',
@@ -77,12 +77,12 @@ export default function Activities() {
 				}
 			]);
 
-			dispatch(getUsers());
+			dispatch(getAttendance());
 		}
 
 		
 		
-		getAttendance();
+		fetchAttendance();
 
 	}, [dispatch]);
 
