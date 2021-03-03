@@ -1,7 +1,7 @@
 import {GET_USERS, USERS_ERROR} from '../types'
 
 const initialState = {
-    list: [],
+    users: [],
     loading: true
 }
 
@@ -12,7 +12,7 @@ export default function(state = initialState, action) {
         case GET_USERS:
             return {
                 ...state,
-                list: action.payload,
+                users: action.payload,
                 loading: false
 
             }

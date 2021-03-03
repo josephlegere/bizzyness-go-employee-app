@@ -13,76 +13,79 @@ const { height, width } = Dimensions.get('window');
 
 export default function Activities() {
 
-    const [ attendance, setAttendance ] = useState([]);
+    // const [ attendance, setAttendance ] = useState([]);
 	const dispatch = useDispatch();
-    const usersList = useSelector(state => state.users);
-    const {loading, error, users} = usersList;
+    const { attendance, loading, errors } = useSelector(state => state.attendanceList);
+    // const {loading, error, users} = usersList;
 
 	useEffect(() => {
 
 		function fetchAttendance () {
-			setAttendance([
-				{
-					date: '2021-02-27',
-					timings: {
-						day_min: [
-							'04:30am - 09:30am',
-							'10:30am - 12:00pm'
-						],
-						noon_min: [
-							'02:00pm - 03:30pm',
-							'04:00pm - 05:30pm',
-							'06:30pm - 08:00pm',
-							'09:00pm - 11:00pm'
-						]
-					},
-					ottimings: [
-						'04:00pm - 05:30pm',
-						'06:30pm - 08:00pm',
-						'09:00pm - 11:00pm'
-					],
-					othours: '5',
-					locations: 'Family Food Centre, Al Maktab Hollandi',
-					status: 'REG'
-				},
-				{
-					date: '2021-03-01',
-					timings: {
-						day_min: [
-							'5:30am - 12:00pm'
-						],
-						noon_min: [
-							'4:00pm - 5:30pm'
-						]
-					},
-					ottimings: [],
-					othours: '',
-					locations: '',
-					status: 'REG'
-				},
-				{
-					date: '2021-03-02',
-					timings: {
-						day_min: [
-							'5:30am - 12:00pm'
-						],
-						noon_min: [
-							'4:00pm - 5:30pm'
-						]
-					},
-					ottimings: [],
-					othours: '',
-					locations: '',
-					status: 'REG'
-				}
-			]);
+			// setAttendance([
+			// 	{
+			// 		date: '2021-02-27',
+			// 		timings: {
+			// 			day_min: [
+			// 				'04:30am - 09:30am',
+			// 				'10:30am - 12:00pm'
+			// 			],
+			// 			noon_min: [
+			// 				'02:00pm - 03:30pm',
+			// 				'04:00pm - 05:30pm',
+			// 				'06:30pm - 08:00pm',
+			// 				'09:00pm - 11:00pm'
+			// 			]
+			// 		},
+			// 		ottimings: [
+			// 			'04:00pm - 05:30pm',
+			// 			'06:30pm - 08:00pm',
+			// 			'09:00pm - 11:00pm'
+			// 		],
+			// 		othours: '5',
+			// 		locations: 'Family Food Centre, Al Maktab Hollandi',
+			// 		status: 'REG'
+			// 	},
+			// 	{
+			// 		date: '2021-03-01',
+			// 		timings: {
+			// 			day_min: [
+			// 				'5:30am - 12:00pm'
+			// 			],
+			// 			noon_min: [
+			// 				'4:00pm - 5:30pm'
+			// 			]
+			// 		},
+			// 		ottimings: [],
+			// 		othours: '',
+			// 		locations: '',
+			// 		status: 'REG'
+			// 	},
+			// 	{
+			// 		date: '2021-03-02',
+			// 		timings: {
+			// 			day_min: [
+			// 				'5:30am - 12:00pm'
+			// 			],
+			// 			noon_min: [
+			// 				'4:00pm - 5:30pm'
+			// 			]
+			// 		},
+			// 		ottimings: [],
+			// 		othours: '',
+			// 		locations: '',
+			// 		status: 'REG'
+			// 	}
+			// ]);
 
-			dispatch(getAttendance());
+			// let { attendance, dayoffs } = data;
+			// console.log(data);
 		}
 
 		
 		
-		fetchAttendance();
+		// fetchAttendance();
+
+		dispatch(getAttendance());
 
 	}, [dispatch]);
 
@@ -151,12 +154,26 @@ export default function Activities() {
                     <Text bold size={22} color='black' >Bizzyness</Text>
                 )}
                 style={{ height: 50 }} />
-			<FlatList
-				data={attendance}
-				keyExtractor={(item, index) => index.toString()}
-				renderItem={({item}) => <Activity attend={item} />}
-				style={{ marginBottom: 20 }}
-			/>
+
+				{ loading
+				? (
+					<Text>
+						Loading...
+					</Text>
+				)
+				: (
+					<Block>
+						<Text>
+							Attendance
+						</Text>
+						<FlatList
+							data={attendance}
+							keyExtractor={(item, index) => index.toString()}
+							renderItem={({item}) => <Activity attend={item} />}
+							style={{ marginBottom: 20 }}
+						/>
+					</Block>
+				)}
         </Block>
     );
 }
