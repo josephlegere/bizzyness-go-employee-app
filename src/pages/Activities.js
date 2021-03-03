@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Button, Card, Icon, NavBar, Text } from 'galio-framework';
@@ -12,7 +12,7 @@ import { getAttendance } from '../store/actions/attendance';
 const { height, width } = Dimensions.get('window');
 
 export default function Activities() {
-
+	const [refreshing, setRefreshing] = React.useState(false);
 	const dispatch = useDispatch();
     const { attendance, loading, errors } = useSelector(state => state.attendanceList);
 
@@ -21,6 +21,13 @@ export default function Activities() {
 		dispatch(getAttendance());
 
 	}, [dispatch]);
+
+	const reloadActivity = () => {
+		setRefreshing(true);
+		dispatch(getAttendance()).then(() => {
+			setRefreshing(false);
+		});
+	}
 
 	// console.log(attendance);
 	
@@ -104,6 +111,12 @@ export default function Activities() {
 						keyExtractor={(item, index) => index.toString()}
 						renderItem={({item}) => <Activity attend={item} />}
 						style={{ marginBottom: 40 }}
+						 refreshControl={
+							<RefreshControl
+								refreshing={refreshing}
+								onRefresh={() => reloadActivity()}
+							/>
+						}
 					/>
 			)}
 			<Block style={styles.fabContainer}>
