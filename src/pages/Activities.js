@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Block, Card, Icon, NavBar, Text } from 'galio-framework';
+import { Block, Button, Card, Icon, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
 import theme from '../assets/theme';
@@ -13,77 +13,10 @@ const { height, width } = Dimensions.get('window');
 
 export default function Activities() {
 
-    // const [ attendance, setAttendance ] = useState([]);
 	const dispatch = useDispatch();
     const { attendance, loading, errors } = useSelector(state => state.attendanceList);
-    // const {loading, error, users} = usersList;
 
 	useEffect(() => {
-
-		function fetchAttendance () {
-			// setAttendance([
-			// 	{
-			// 		date: '2021-02-27',
-			// 		timings: {
-			// 			day_min: [
-			// 				'04:30am - 09:30am',
-			// 				'10:30am - 12:00pm'
-			// 			],
-			// 			noon_min: [
-			// 				'02:00pm - 03:30pm',
-			// 				'04:00pm - 05:30pm',
-			// 				'06:30pm - 08:00pm',
-			// 				'09:00pm - 11:00pm'
-			// 			]
-			// 		},
-			// 		ottimings: [
-			// 			'04:00pm - 05:30pm',
-			// 			'06:30pm - 08:00pm',
-			// 			'09:00pm - 11:00pm'
-			// 		],
-			// 		othours: '5',
-			// 		locations: 'Family Food Centre, Al Maktab Hollandi',
-			// 		status: 'REG'
-			// 	},
-			// 	{
-			// 		date: '2021-03-01',
-			// 		timings: {
-			// 			day_min: [
-			// 				'5:30am - 12:00pm'
-			// 			],
-			// 			noon_min: [
-			// 				'4:00pm - 5:30pm'
-			// 			]
-			// 		},
-			// 		ottimings: [],
-			// 		othours: '',
-			// 		locations: '',
-			// 		status: 'REG'
-			// 	},
-			// 	{
-			// 		date: '2021-03-02',
-			// 		timings: {
-			// 			day_min: [
-			// 				'5:30am - 12:00pm'
-			// 			],
-			// 			noon_min: [
-			// 				'4:00pm - 5:30pm'
-			// 			]
-			// 		},
-			// 		ottimings: [],
-			// 		othours: '',
-			// 		locations: '',
-			// 		status: 'REG'
-			// 	}
-			// ]);
-
-			// let { attendance, dayoffs } = data;
-			// console.log(data);
-		}
-
-		
-		
-		// fetchAttendance();
 
 		dispatch(getAttendance());
 
@@ -145,6 +78,10 @@ export default function Activities() {
 		)
 	}
 
+	const timein = () => {
+		console.log('Time In!');
+	}
+
     return (
         <Block safe flex>
 			<NavBar
@@ -155,25 +92,24 @@ export default function Activities() {
                 )}
                 style={{ height: 50 }} />
 
-				{ loading
-				? (
-					<Text>
-						Loading...
-					</Text>
-				)
-				: (
-					<Block>
-						<Text>
-							Attendance
-						</Text>
-						<FlatList
-							data={attendance}
-							keyExtractor={(item, index) => index.toString()}
-							renderItem={({item}) => <Activity attend={item} />}
-							style={{ marginBottom: 20 }}
-						/>
-					</Block>
-				)}
+			{ loading
+			? (
+				<Block flex style={{ justifyContent: "center" }}>
+					<ActivityIndicator size="large" color="#914c06" />
+				</Block>
+			)
+			: (
+					<FlatList
+						data={attendance}
+						keyExtractor={(item, index) => index.toString()}
+						renderItem={({item}) => <Activity attend={item} />}
+						style={{ marginBottom: 40 }}
+					/>
+			)}
+			<Block style={styles.fabContainer}>
+				<Button onlyIcon icon="timer" iconFamily="ionicons" iconSize={40} color="#914c06" iconColor="#fff" style={styles.fab} onPress={() => timein()}></Button>
+				<Button onlyIcon disabled icon="add" iconFamily="ionicons" iconSize={25} color="#fff" iconColor="#914c06" style={styles.badge}></Button>
+			</Block>
         </Block>
     );
 }
@@ -207,5 +143,23 @@ const styles = StyleSheet.create({
 	},
 	col: {
 		flexDirection: 'column'
+	},
+	fabContainer: {
+		zIndex: 998,
+		position: 'absolute',
+		bottom: 0,
+		right: 0
+	},
+	fab: {
+		width: 60,
+		height: 60,
+	},
+	badge: {
+		width: 25,
+		height: 25,
+		zIndex: 999,
+		position: 'absolute',
+		top: -8,
+		right: -8
 	}
 });
