@@ -11,7 +11,7 @@ import { getAttendance } from '../store/actions/attendance';
 
 const { height, width } = Dimensions.get('window');
 
-export default function Activities() {
+export default function Activities({ navigation }) {
 	const [refreshing, setRefreshing] = React.useState(false);
 	const dispatch = useDispatch();
     const { attendance, loading, errors } = useSelector(state => state.attendanceList);
@@ -48,13 +48,13 @@ export default function Activities() {
 				<Block style={{ marginBottom: 10 }}>
 					<Block style={styles.row}>
 						<Block style={styles.col}>
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Day</Text>
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Day</Text>
 							{attend.timings.day_min && attend.timings.day_min.map((day, day_id) => (
 								<Text size={18} key={day_id} style={{ color: theme.COLORS.WHITE }}>{day}</Text>
 							))}
 						</Block>
 						<Block style={styles.col}>
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE }}>Noon</Text>
+							<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Noon</Text>
 							{attend.timings.noon_min && attend.timings.noon_min.map((noon, noon_id) => (
 								<Text size={18} key={noon_id} style={{ color: theme.COLORS.WHITE }}>{noon}</Text>
 							))}
@@ -63,12 +63,12 @@ export default function Activities() {
 				</Block>
 				
 				{attend.locations !== '' ?
-				<Block>
+				<Block style={{ marginBottom: 10 }}>
 					<Text style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>
 						<Text size={20} bold>Overtime&nbsp;</Text>
 						<Text size={16}> - {attend.othours} Hours</Text>
 					</Text>
-					<Block style={{ height: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
+					<Block style={{ maxHeight: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
 						{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
 							<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
 						))}
@@ -85,9 +85,9 @@ export default function Activities() {
 		)
 	}
 
-	const timein = () => {
-		console.log('Time In!');
-	}
+	// const timein = () => {
+	// 	console.log('Time In!');
+	// }
 
     return (
         <Block safe flex>
@@ -120,7 +120,7 @@ export default function Activities() {
 					/>
 			)}
 			<Block style={styles.fabContainer}>
-				<Button onlyIcon icon="timer" iconFamily="ionicons" iconSize={40} color="#914c06" iconColor="#fff" style={styles.fab} onPress={() => timein()}></Button>
+				<Button onlyIcon icon="timer" iconFamily="ionicons" iconSize={40} color="#914c06" iconColor="#fff" style={styles.fab} onPress={() => navigation.navigate('Add Attendance')}></Button>
 				<Button onlyIcon disabled icon="add" iconFamily="ionicons" iconSize={25} color="#fff" iconColor="#914c06" style={styles.badge}></Button>
 			</Block>
         </Block>

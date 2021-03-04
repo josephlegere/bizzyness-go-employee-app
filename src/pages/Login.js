@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Dimensions, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { Block, Button, Input, NavBar, Text } from 'galio-framework';
+import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
 import theme from '../assets/theme';
 
@@ -15,7 +15,9 @@ export default function Login({ navigation }) {
 			<Block style={{ marginTop: 20 }} />
 			<NavBar
 				title="Bizzyness"
-				onLeftPress={() => navigation.openDrawer()}
+                right={(
+					<Icon name="settings" family="ionicons" color="#303030" size={15} onPress={() => console.log('Turn On App Settings')} />
+                )}
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
 			<KeyboardAvoidingView style={styles.container} behavior="height" enabled>
