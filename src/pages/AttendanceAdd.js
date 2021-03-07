@@ -1,39 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, Pressable, RefreshControl, StyleSheet } from 'react-native';
 
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Block, Button, Card, Icon, NavBar, Text } from 'galio-framework';
+import DateTimeSelector from '../components/datetimeselector';
+import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
 import theme from '../assets/theme';
 
+const { height, width } = Dimensions.get('window');
+
 export default function AttendanceAdd({ navigation }) {
     
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
+    const [ dayType, setDayType ] = useState('Work Day');
+    const [ status, setStatus ] = useState('Regular');
+    const [ statusColor, setStatusColor ] = useState('green');
+    const [ date, setDate ] = useState(moment().toDate());
 
-    const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
-    };
-
-    const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-    };
-
-    const showDatepicker = () => {
-    showMode('date');
-    };
-
-    const showTimepicker = () => {
-    showMode('time');
-    };
+    const submit = () => {
+        console.log(date);
+    }
 
     return (
-        <Block flex center>
+        <Block flex>
             <NavBar
                 title="Time In"
                 // transparent
@@ -47,28 +35,34 @@ export default function AttendanceAdd({ navigation }) {
                     fontWeight: 'bold'
                 }}
                 onLeftPress={() => { navigation.goBack(); }} />
-            <Block flex style={{ justifyContent: 'center' }}>
-                <Block>
-                    <Button onPress={showDatepicker}>
-                        Show date picker!
-                    </Button>
+
+            <Block flex style={{ margin: theme.SIZES.BASE }}>
+                <Block style={styles.header}>
+                    <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
+                    <Text p bold style={{ color: statusColor }}>{status}</Text>
                 </Block>
-                <Block>
-                    <Button onPress={showTimepicker}>
-                        Show time picker!
-                    </Button>
-                </Block>
-                {show && (
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                    />
-                )}
+
+                {/* <DateTimeSelector value={date} mode="time" /> */}
+                <DateTimeSelector
+                    value={date}
+                    // mode="time"
+                    onChange={(date) => setDate(date)}
+                    format="dddd MMM. D, YYYY"
+                />
+
+                <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
+
             </Block>
         </Block>
     );
 }
+
+const styles = StyleSheet.create({
+    header: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 10
+    },
+    date: {
+    }
+});

@@ -34,7 +34,7 @@ export default function Dashboard() {
 				}
 			})}
 			tabBarOptions={{
-				activeTintColor: '#914c06',
+				activeTintColor: '#663b0e',
 				inactiveTintColor: 'gray',
 			}}
 		>
