@@ -7,7 +7,7 @@ import moment from 'moment';
 
 export default function DateTimeSelector(props, { navigation }) {
 
-    let { value, mode, format, onChange } = props;
+    let { value, mode, format, onChange, width } = props;
 
     const convertToProper = () => {
         let _datetime;
@@ -59,7 +59,7 @@ export default function DateTimeSelector(props, { navigation }) {
     return (
         <Block>
             <Pressable onPress={showDialog}>
-                <Input borderless rounded value={modeToDisplay()} editable={false} />
+                <Input borderless rounded value={modeToDisplay()} editable={false} style={[ width ? { width } : {} ]} />
             </Pressable>
 
             {show && (
@@ -74,3 +74,11 @@ export default function DateTimeSelector(props, { navigation }) {
         </Block>
     );
 }
+
+const styles = StyleSheet.create({
+    header: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 10
+    }
+});

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Pressable, RefreshControl, StyleSheet } from 'react-native';
 
-import DateTimeSelector from '../components/datetimeselector';
 import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
+import DateTimeSelector from '../components/datetimeselector';
+import AttendItemSet from '../components/attenditemset';
 import theme from '../assets/theme';
 
 const { height, width } = Dimensions.get('window');
@@ -15,9 +16,14 @@ export default function AttendanceAdd({ navigation }) {
     const [ status, setStatus ] = useState('Regular');
     const [ statusColor, setStatusColor ] = useState('green');
     const [ date, setDate ] = useState(moment().toDate());
+    const [ timings, setTimings ] = useState(['hi', 'hello']);
 
     const submit = () => {
         console.log(date);
+    }
+
+    const addTimeInObject = () => {
+        setTimings([ ...timings, 'hi' ]);
     }
 
     return (
@@ -43,11 +49,20 @@ export default function AttendanceAdd({ navigation }) {
                 </Block>
 
                 {/* <DateTimeSelector value={date} mode="time" /> */}
-                <DateTimeSelector
-                    value={date}
-                    // mode="time"
-                    onChange={(date) => setDate(date)}
-                    format="dddd MMM. D, YYYY"
+                <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                    <DateTimeSelector
+                        value={date}
+                        // mode="time"
+                        onChange={(date) => setDate(date)}
+                        format="dddd MMM. D, YYYY"
+                    />
+                    <Button round  size="small" color="#663b0e" onPress={addTimeInObject}>Add</Button>
+                </Block>
+
+                <FlatList
+                    data={timings}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item}) => <AttendItemSet attend={item} />}
                 />
 
                 <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>

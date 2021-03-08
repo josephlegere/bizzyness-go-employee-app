@@ -111,7 +111,7 @@ export default function Activities({ navigation }) {
 						keyExtractor={(item, index) => index.toString()}
 						renderItem={({item}) => <Activity attend={item} />}
 						style={{ marginBottom: 40 }}
-						 refreshControl={
+						refreshControl={
 							<RefreshControl
 								refreshing={refreshing}
 								onRefresh={() => reloadActivity()}
