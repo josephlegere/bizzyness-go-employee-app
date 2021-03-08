@@ -22,8 +22,12 @@ export default function AttendanceAdd({ navigation }) {
         console.log(date);
     }
 
-    const addTimeInObject = () => {
+    const addTimeInSet = () => {
         setTimings([ ...timings, 'hi' ]);
+    }
+
+    const removeTimeInSet = (index) => {
+        setTimings(prevItemState => prevItemState.filter((_item, _Index) => _Index !== index));
     }
 
     return (
@@ -55,15 +59,15 @@ export default function AttendanceAdd({ navigation }) {
                         // mode="time"
                         onChange={(date) => setDate(date)}
                         format="dddd MMM. D, YYYY"
-                        width={width * 0.5}
+                        width={width * 0.55}
                     />
-                    <Button round  size="small" color="#663b0e" onPress={addTimeInObject} style={{ width: width * 0.3 }}>Add</Button>
+                    <Button round  size="small" color="#663b0e" onPress={addTimeInSet} style={{ width: width * 0.3 }}>Add</Button>
                 </Block>
 
                 <FlatList
                     data={timings}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item}) => <AttendItemSet attend={item} />}
+                    renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} />}
                 />
 
                 <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>

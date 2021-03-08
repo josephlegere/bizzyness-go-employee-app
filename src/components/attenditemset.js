@@ -12,7 +12,10 @@ const { height, width } = Dimensions.get('window');
 
 export default function AttendItemSet(props) {
 
-    let { attend } = props;
+    let { attend, index, remove } = props;
+    // console.log(attend);
+    // console.log(index);
+    // console.log(remove);
     
     const deleteItem = () => {
         console.log('Clear');
@@ -25,7 +28,7 @@ export default function AttendItemSet(props) {
                 <DateTimeSelector mode="time" width={ width * 0.38 } />
             </Block>
             <Input borderless rounded placeholder="Location" placeholderTextColor="#cfcfcf" />
-            <Button onlyIcon icon="clear" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={deleteItem} style={styles.clear} ></Button>
+            <Button onlyIcon icon="remove" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={() => { remove(index) }} style={styles.clear} ></Button>
         </Block>
     );
 }
