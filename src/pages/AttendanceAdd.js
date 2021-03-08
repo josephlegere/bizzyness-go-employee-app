@@ -4,8 +4,8 @@ import { ActivityIndicator, Dimensions, FlatList, Pressable, RefreshControl, Sty
 import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
-import DateTimeSelector from '../components/datetimeselector';
-import AttendItemSet from '../components/attenditemset';
+import DateTimeSelector from '../components/DateTimeSelector';
+import AttendItemSet from '../components/AttendItemSet';
 import theme from '../assets/theme';
 
 const { height, width } = Dimensions.get('window');
@@ -55,8 +55,9 @@ export default function AttendanceAdd({ navigation }) {
                         // mode="time"
                         onChange={(date) => setDate(date)}
                         format="dddd MMM. D, YYYY"
+                        width={width * 0.5}
                     />
-                    <Button round  size="small" color="#663b0e" onPress={addTimeInObject}>Add</Button>
+                    <Button round  size="small" color="#663b0e" onPress={addTimeInObject} style={{ width: width * 0.3 }}>Add</Button>
                 </Block>
 
                 <FlatList

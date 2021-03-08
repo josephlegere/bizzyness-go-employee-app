@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import theme from '../assets/theme';
 
-import DateTimeSelector from './datetimeselector';
+import DateTimeSelector from './DateTimeSelector';
 
 const { height, width } = Dimensions.get('window');
 
