@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Dimensions, Pressable, StyleSheet } from 'react-native';
+import { Dimensions, KeyboardAvoidingView, Pressable, StyleSheet } from 'react-native';
 
 import { Block, Button, Icon, Input, Text } from 'galio-framework';
 import moment from 'moment';
@@ -12,7 +12,7 @@ const { height, width } = Dimensions.get('window');
 
 export default function AttendItemSet(props) {
 
-    let { attend, index, remove } = props;
+    let { attend, index, remove, updateList } = props;
     // console.log(attend);
     // console.log(index);
     // console.log(remove);
@@ -24,11 +24,11 @@ export default function AttendItemSet(props) {
     return (
         <Block style={styles.card}>
             <Block style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <DateTimeSelector mode="time" width={ width * 0.38 } />
-                <DateTimeSelector mode="time" width={ width * 0.38 } />
+                <DateTimeSelector mode="time" width={ width * 0.38 } value={attend.in} onChange={(date) => updateList(moment(date).format('HH:mm:ss'), index, 'in')} />
+                <DateTimeSelector mode="time" width={ width * 0.38 } value={attend.out} onChange={(date) => updateList(moment(date).format('HH:mm:ss'), index, 'out')} />
             </Block>
-            <Input borderless rounded placeholder="Location" placeholderTextColor="#cfcfcf" />
-            <Button onlyIcon icon="remove" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={() => { remove(index) }} style={styles.clear} ></Button>
+            <Input borderless rounded placeholder="Location" placeholderTextColor="#cfcfcf" value={attend.location} onChangeText={text => updateList(text, index, 'location')} />
+            <Button onlyIcon icon="remove" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={() => remove(index)} style={styles.clear} ></Button>
         </Block>
     );
 }

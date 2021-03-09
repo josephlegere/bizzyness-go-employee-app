@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, Pressable, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet } from 'react-native';
 
 import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
@@ -16,18 +16,30 @@ export default function AttendanceAdd({ navigation }) {
     const [ status, setStatus ] = useState('Regular');
     const [ statusColor, setStatusColor ] = useState('green');
     const [ date, setDate ] = useState(moment().toDate());
-    const [ timings, setTimings ] = useState(['hi', 'hello']);
+    const [ timings, setTimings ] = useState([
+        { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
+        { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
+    ]);
+    // tags are important information of the attend / timing object, e.g. Morning, Afternoon, Overtime, indicating that if the object is morning or has reach overtime
 
     const submit = () => {
         console.log(date);
+        console.log(timings);
     }
 
     const addTimeInSet = () => {
-        setTimings([ ...timings, 'hi' ]);
+        setTimings([ ...timings, { in: '12:00:00', out: '14:00:00', location: '', tags: ['Afternoon'] } ]);
     }
 
     const removeTimeInSet = (index) => {
         setTimings(prevItemState => prevItemState.filter((_item, _Index) => _Index !== index));
+    }
+
+    const changeAttendDetails = (value, index, type) => {
+        console.log(index);
+        let _timings = [...timings];
+        _timings[index][type] = value;
+        setTimings(_timings);
     }
 
     return (
@@ -35,16 +47,22 @@ export default function AttendanceAdd({ navigation }) {
             <NavBar
                 title="Time In"
                 // transparent
-                back
                 titleStyle={{
-                    fontSize: 16,
-                    fontWeight: 'bold'
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: '#fff'
                 }}
+                left={
+                    <Icon name="chevron-left" family="ionicons" color="#fff" size={30} onPress={() => navigation.goBack()} />
+                }
                 leftStyle={{
                     fontSize: 16,
                     fontWeight: 'bold'
                 }}
-                onLeftPress={() => { navigation.goBack(); }} />
+                // onLeftPress={() => { navigation.goBack(); }}
+                style={{
+                    backgroundColor: '#7a7a7a'
+                }} />
 
             <Block flex style={{ margin: theme.SIZES.BASE }}>
                 <Block style={styles.header}>
@@ -52,25 +70,27 @@ export default function AttendanceAdd({ navigation }) {
                     <Text p bold style={{ color: statusColor }}>{status}</Text>
                 </Block>
 
-                {/* <DateTimeSelector value={date} mode="time" /> */}
-                <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                    <DateTimeSelector
-                        value={date}
-                        // mode="time"
-                        onChange={(date) => setDate(date)}
-                        format="dddd MMM. D, YYYY"
-                        width={width * 0.55}
+                <KeyboardAvoidingView style={{ flex: 1 }}>
+                    <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                        <DateTimeSelector
+                            value={date}
+                            // mode="time"
+                            onChange={(date) => setDate(date)}
+                            format="dddd MMM. D, YYYY"
+                            width={width * 0.55}
+                        />
+                        <Button round size="small" color="#663b0e" onPress={addTimeInSet} style={{ width: width * 0.3 }}>Add</Button>
+                    </Block>
+
+                    <FlatList
+                        data={timings}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
+                        ListFooterComponent={<Block style={{ height: 200 }}></Block>}
                     />
-                    <Button round  size="small" color="#663b0e" onPress={addTimeInSet} style={{ width: width * 0.3 }}>Add</Button>
-                </Block>
 
-                <FlatList
-                    data={timings}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} />}
-                />
-
-                <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
+                    <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
+                </KeyboardAvoidingView>
 
             </Block>
         </Block>
