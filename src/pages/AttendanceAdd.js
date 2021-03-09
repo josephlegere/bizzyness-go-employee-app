@@ -13,14 +13,14 @@ const { height, width } = Dimensions.get('window');
 export default function AttendanceAdd({ navigation }) {
     
     const [ dayType, setDayType ] = useState('Work Day');
-    const [ status, setStatus ] = useState('Regular');
-    const [ statusColor, setStatusColor ] = useState('green');
     const [ date, setDate ] = useState(moment().toDate());
     const [ timings, setTimings ] = useState([
         { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
         { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
     ]);
     // tags are important information of the attend / timing object, e.g. Morning, Afternoon, Overtime, indicating that if the object is morning or has reach overtime
+
+    const requiredHours = 8;
 
     const submit = () => {
         console.log(date);
@@ -40,6 +40,13 @@ export default function AttendanceAdd({ navigation }) {
         let _timings = [...timings];
         _timings[index][type] = value;
         setTimings(_timings);
+    }
+
+    // computed
+    const hoursTotal = () => {
+        return timings.reduce((accumulator, current) => {
+            return accumulator + (moment(`${moment().format('YYYY-MM-DD')} ${current.out}`).diff(moment(`${moment().format('YYYY-MM-DD')} ${current.in}`), 'hours', true));
+        }, 0);
     }
 
     return (
@@ -67,7 +74,9 @@ export default function AttendanceAdd({ navigation }) {
             <Block flex style={{ margin: theme.SIZES.BASE }}>
                 <Block style={styles.header}>
                     <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
-                    <Text p bold style={{ color: statusColor }}>{status}</Text>
+                    <Text p bold style={ [hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
+                        {hoursTotal() > requiredHours ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? 'Overtime' : 'Regular' ) : 'Incomplete'}
+                    </Text>
                 </Block>
 
                 <KeyboardAvoidingView style={{ flex: 1 }}>
