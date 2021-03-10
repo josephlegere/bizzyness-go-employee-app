@@ -28,7 +28,8 @@ export default function AttendanceAdd({ navigation }) {
     }
 
     const addTimeInSet = () => {
-        setTimings([ ...timings, { in: '12:00:00', out: '14:00:00', location: '', tags: ['Afternoon'] } ]);
+        let _timings = [ ...timings, { in: '12:00:00', out: '14:00:00', location: '', tags: ['Afternoon'] }];
+        setTimings(sortTiming(_timings));
     }
 
     const removeTimeInSet = (index) => {
@@ -39,13 +40,21 @@ export default function AttendanceAdd({ navigation }) {
         console.log(index);
         let _timings = [...timings];
         _timings[index][type] = value;
-        setTimings(_timings);
+        setTimings(sortTiming(_timings));
+    }
+
+    const sortTiming = (timings) => {
+        return timings.sort(function (a, b) {
+            if (moment(a.in, 'HH:mm:ss').isBefore(moment(b.in, 'HH:mm:ss'))) return -1;
+            if (moment(a.in, 'HH:mm:ss').isAfter(moment(b.in, 'HH:mm:ss'))) return 1;
+            return 0;
+        });
     }
 
     // computed
     const hoursTotal = () => {
         return timings.reduce((accumulator, current) => {
-            return accumulator + (moment(`${moment().format('YYYY-MM-DD')} ${current.out}`).diff(moment(`${moment().format('YYYY-MM-DD')} ${current.in}`), 'hours', true));
+            return accumulator + (moment(current.out, 'HH:mm:ss').diff(moment(current.in, 'HH:mm:ss'), 'hours', true));
         }, 0);
     }
 
