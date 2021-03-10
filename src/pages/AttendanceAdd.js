@@ -29,18 +29,20 @@ export default function AttendanceAdd({ navigation }) {
 
     const addTimeInSet = () => {
         let _timings = [ ...timings, { in: '12:00:00', out: '14:00:00', location: '', tags: ['Afternoon'] }];
-        setTimings(sortTiming(_timings));
+        setTimings(identifyTags(_timings));
     }
 
     const removeTimeInSet = (index) => {
-        setTimings(prevItemState => prevItemState.filter((_item, _Index) => _Index !== index));
+        let _timings = [...timings];
+        _timings = _timings.filter((_item, _Index) => _Index !== index);
+        setTimings(identifyTags(_timings));
     }
 
     const changeAttendDetails = (value, index, type) => {
         console.log(index);
         let _timings = [...timings];
         _timings[index][type] = value;
-        setTimings(sortTiming(_timings));
+        setTimings(identifyTags(_timings));
     }
 
     const sortTiming = (timings) => {
@@ -48,6 +50,32 @@ export default function AttendanceAdd({ navigation }) {
             if (moment(a.in, 'HH:mm:ss').isBefore(moment(b.in, 'HH:mm:ss'))) return -1;
             if (moment(a.in, 'HH:mm:ss').isAfter(moment(b.in, 'HH:mm:ss'))) return 1;
             return 0;
+        });
+    }
+
+    const identifyTags = (timings) => {
+        let _hoursTotal = 0;
+        timings = sortTiming(timings);
+        return timings.map((timing) => {
+
+            if (moment(timing.in, 'HH:mm:ss').isBefore(moment('12:00:00', 'HH:mm:ss'))) {
+                timing.tags = timing.tags.filter((_item, _index) => _item !== 'Afternoon');
+                if (!timing.tags.includes('Morning')) timing.tags = [...timing.tags, 'Morning'];
+            }
+            else {
+                timing.tags = timing.tags.filter((_item, _index) => _item !== 'Morning');
+                if (!timing.tags.includes('Afternoon')) timing.tags = [...timing.tags, 'Afternoon'];
+            }
+
+            if (_hoursTotal <= requiredHours) {
+                timing.tags = timing.tags.filter((_item, _index) => _item !== 'Overtime');
+                _hoursTotal += (moment(timing.out, 'HH:mm:ss').diff(moment(timing.in, 'HH:mm:ss'), 'hours', true));
+            }
+            if (_hoursTotal > requiredHours) {
+                if (!timing.tags.includes('Overtime')) timing.tags = [...timing.tags, 'Overtime'];
+            }
+
+            return timing;
         });
     }
 
@@ -61,7 +89,7 @@ export default function AttendanceAdd({ navigation }) {
     return (
         <Block flex>
             <NavBar
-                title="Time In"
+                title="Time In For The Day"
                 // transparent
                 titleStyle={{
                     fontSize: 18,
@@ -105,6 +133,7 @@ export default function AttendanceAdd({ navigation }) {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
                         ListFooterComponent={<Block style={{ height: 200 }}></Block>}
+                        ListHeaderComponent={<Block style={{ height: 5 }}></Block>}
                     />
 
                     <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
