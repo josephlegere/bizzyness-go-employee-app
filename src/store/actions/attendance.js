@@ -28,3 +28,41 @@ export const getAttendance = () => async dispatch => {
     }
 
 }
+
+export const addAttendance = (body) => async dispatch => {
+
+    console.log(BASE_URL);
+    let { date, timings } = body;
+
+    try {
+        console.log('Add Attendance');
+        const res = await axios.post(`${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/HiternQX1hmdvcxnrSIr/wNRypiPjVsbYicDxJipusZQmqSC3`, {
+            date,
+            service_uniq: "1866R8U5ac99de43b85c",
+            employee: {                
+                name: "Edilberto Baslot",
+                id: "users/wNRypiPjVsbYicDxJipusZQmqSC3",
+                account: "Goodwill Electrical and Mechanical Services"
+            },
+            timings
+        }, {
+            headers: {
+                external_api: 'http://gemserve.com.qa/gemserve/gemrest',
+                server_type: 'hybrid_lamp_fire'
+            }
+        });
+        // console.log(res.data);
+        
+        dispatch( {
+            type: GET_ATTENDANCE,
+            payload: res.data
+        });
+    }
+    catch (error) {
+        dispatch( {
+            type: ATTENDANCE_ERROR,
+            payload: error
+        });
+    }
+
+}

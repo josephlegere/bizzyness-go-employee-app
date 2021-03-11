@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
@@ -8,9 +9,13 @@ import DateTimeSelector from '../components/DateTimeSelector';
 import AttendItemSet from '../components/AttendItemSet';
 import theme from '../assets/theme';
 
+import { addAttendance } from '../store/actions/attendance';
+
 const { height, width } = Dimensions.get('window');
 
 export default function AttendanceAdd({ navigation }) {
+
+	const dispatch = useDispatch();
     
     const [ dayType, setDayType ] = useState('Work Day');
     const [ date, setDate ] = useState(moment().toDate());
@@ -23,8 +28,16 @@ export default function AttendanceAdd({ navigation }) {
     const requiredHours = 8;
 
     const submit = () => {
+        let _timings = timings.map(elem => {
+            let { out, location } = elem;
+            return { in: elem.in, out, location };
+        });
+
         console.log(date);
-        console.log(timings);
+        console.log(_timings);
+
+        dispatch(addAttendance({ date, timings: _timings }));
+
     }
 
     const addTimeInSet = () => {
