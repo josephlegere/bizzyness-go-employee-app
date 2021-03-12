@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { Block, Button, Card, Icon, Input, NavBar, Text } from 'galio-framework';
+import { Block, Button, Card, Icon, Input, NavBar, Toast, Text } from 'galio-framework';
 import moment from 'moment';
 
 import DateTimeSelector from '../components/DateTimeSelector';
@@ -25,6 +25,8 @@ export default function AttendanceAdd({ navigation }) {
     ]);
     // tags are important information of the attend / timing object, e.g. Morning, Afternoon, Overtime, indicating that if the object is morning or has reach overtime
     const [ loading, setLoading ] = useState(false);
+    const [ isSuccess, setSuccess ] = useState(false);
+    const [ isFailure, setFailure ] = useState(false);
 
     const requiredHours = 8;
 
@@ -42,6 +44,10 @@ export default function AttendanceAdd({ navigation }) {
 
         dispatch(addAttendance({ date, timings: _timings }))
             .then(() => {
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                }, 5000);
                 setTimings([
                     { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
                     { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
@@ -50,7 +56,10 @@ export default function AttendanceAdd({ navigation }) {
             })
             .catch((err) => {
                 console.error(err);
-
+                setFailure(true);
+                setTimeout(() => {
+                    setFailure(false);
+                }, 5000);
             });
 
     }
@@ -135,6 +144,8 @@ export default function AttendanceAdd({ navigation }) {
                 style={{
                     backgroundColor: '#7a7a7a'
                 }} />
+                <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} textStyle={styles.toastText} style={styles.toast}>You have successfully Timed In!</Toast>
+                <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} textStyle={styles.toastText} style={styles.toast}>There was an error on submit!</Toast>
 
             { loading
 			? (
@@ -187,5 +198,13 @@ const styles = StyleSheet.create({
 		marginBottom: 10
     },
     date: {
+    },
+    toast: {
+        position: 'absolute',
+        top: 65,
+        left: 0
+    },
+    toastText: {
+        color: '#fff'
     }
 });
