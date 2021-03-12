@@ -24,10 +24,14 @@ export default function AttendanceAdd({ navigation }) {
         { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
     ]);
     // tags are important information of the attend / timing object, e.g. Morning, Afternoon, Overtime, indicating that if the object is morning or has reach overtime
+    const [ loading, setLoading ] = useState(false);
 
     const requiredHours = 8;
 
     const submit = () => {
+        
+        setLoading(true);
+
         let _timings = timings.map(elem => {
             let { out, location } = elem;
             return { in: elem.in, out, location };
@@ -36,7 +40,18 @@ export default function AttendanceAdd({ navigation }) {
         console.log(date);
         console.log(_timings);
 
-        dispatch(addAttendance({ date, timings: _timings }));
+        dispatch(addAttendance({ date, timings: _timings }))
+            .then(() => {
+                setTimings([
+                    { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
+                    { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
+                ]);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error(err);
+
+            });
 
     }
 
@@ -121,38 +136,46 @@ export default function AttendanceAdd({ navigation }) {
                     backgroundColor: '#7a7a7a'
                 }} />
 
-            <Block flex style={{ margin: theme.SIZES.BASE }}>
-                <Block style={styles.header}>
-                    <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
-                    <Text p bold style={ [hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
-                        {hoursTotal() > requiredHours ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? 'Overtime' : 'Regular' ) : 'Incomplete'}
-                    </Text>
-                </Block>
-
-                <KeyboardAvoidingView style={{ flex: 1 }}>
-                    <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                        <DateTimeSelector
-                            value={date}
-                            // mode="time"
-                            onChange={(date) => setDate(date)}
-                            format="dddd MMM. D, YYYY"
-                            width={width * 0.55}
-                        />
-                        <Button round size="small" color="#663b0e" onPress={addTimeInSet} style={{ width: width * 0.3 }}>Add</Button>
+            { loading
+			? (
+				<Block flex style={{ justifyContent: "center" }}>
+					<ActivityIndicator size="large" color="#914c06" />
+				</Block>
+			)
+			: (
+                <Block flex style={{ margin: theme.SIZES.BASE }}>
+                    <Block style={styles.header}>
+                        <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
+                        <Text p bold style={ [hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
+                            {hoursTotal() > requiredHours ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? 'Overtime' : 'Regular' ) : 'Incomplete'}
+                        </Text>
                     </Block>
 
-                    <FlatList
-                        data={timings}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
-                        ListFooterComponent={<Block style={{ height: 200 }}></Block>}
-                        ListHeaderComponent={<Block style={{ height: 5 }}></Block>}
-                    />
+                    <KeyboardAvoidingView style={{ flex: 1 }}>
+                        <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                            <DateTimeSelector
+                                value={date}
+                                // mode="time"
+                                onChange={(date) => setDate(date)}
+                                format="dddd MMM. D, YYYY"
+                                width={width * 0.55}
+                            />
+                            <Button round size="small" color="#663b0e" onPress={addTimeInSet} style={{ width: width * 0.3 }}>Add</Button>
+                        </Block>
 
-                    <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
-                </KeyboardAvoidingView>
+                        <FlatList
+                            data={timings}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
+                            ListFooterComponent={<Block style={{ height: 200 }}></Block>}
+                            ListHeaderComponent={<Block style={{ height: 5 }}></Block>}
+                        />
 
-            </Block>
+                        <Button round uppercase size="large" color="#663b0e" onPress={submit}>Submit</Button>
+                    </KeyboardAvoidingView>
+
+                </Block>
+            )}
         </Block>
     );
 }
