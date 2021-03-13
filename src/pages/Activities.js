@@ -43,7 +43,10 @@ export default function Activities({ navigation }) {
 			>
 				<Block style={styles.cardHeader}>
 					<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
-					<Text p style={{ color: theme.COLORS.WHITE }}>{attend.status}</Text>
+					<Text p style={{ color: theme.COLORS.WHITE }}>{attend.workstatus}</Text>
+				</Block>
+				<Block style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
+					<Text size={18} style={{ color: theme.COLORS.WHITE }}>{attend.daytype}</Text>
 				</Block>
 				<Block style={{ marginBottom: 10 }}>
 					<Block style={styles.row}>
@@ -62,7 +65,7 @@ export default function Activities({ navigation }) {
 					</Block>
 				</Block>
 				
-				{attend.locations !== '' ?
+				{attend.ottimings.length > 0 ?
 				<Block style={{ marginBottom: 10 }}>
 					<Text style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>
 						<Text size={20} bold>Overtime&nbsp;</Text>
@@ -76,11 +79,15 @@ export default function Activities({ navigation }) {
 				</Block> : <Block></Block>}
 
 				{attend.locations !== '' ?
-				<Text style={{ color: theme.COLORS.WHITE }}>
+				<Text style={{ color: theme.COLORS.WHITE, marginBottom: 10 }}>
 					<Icon name="location-pin" family="entypo" color="#fff" size={20} />
 					{/* <Text size={20} bold>Location: </Text> */}
 					<Text size={16}>{attend.locations}</Text>
 				</Text> : <Block></Block>}
+				<Block style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 5 }}>
+					<Text size={15} style={{ color: theme.COLORS.WHITE, marginRight: 15 }}>{attend.verify}</Text>
+                    <Icon name="dots-three-vertical" family="entypo" color="#fff" size={18} onPress={() => console.log('Activity Settings')} />
+				</Block>
 			</Block>
 		)
 	}
@@ -117,6 +124,7 @@ export default function Activities({ navigation }) {
 								onRefresh={() => reloadActivity()}
 							/>
 						}
+						ListFooterComponent={<Block style={{ height: 20 }}></Block>}
 					/>
 			)}
 			<Block style={styles.fabContainer}>
@@ -148,7 +156,7 @@ const styles = StyleSheet.create({
 	cardHeader: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		marginBottom: 10
+		// marginBottom: 10
 	},
 	row: {
 		flexDirection: 'row',

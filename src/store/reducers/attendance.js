@@ -223,11 +223,13 @@ function attendance_formatted (data) {
         // _obj['ottimings'] = `${overtime_timings.in}${(overtime_timings.in !== '' && overtime_timings.out !== '' ? ' - ' : '')}${overtime_timings.out}`;
         _obj['ottimings'] = overtime_timings.list;
         _obj['othours'] = (hrTotal <= workHours ? '' : hrTotal - workHours);
+        _obj['workstatus'] = (hrTotal >= workHours ? ( hrTotal > workHours ? 'OT' : 'REG') : 'INC');// specify attendance status: 'OVERTIME', 'REGULAR', 'UNDERTIME'
 
         _obj['locations'] = locations;
-        _obj['status'] = (hrTotal >= workHours ? ( hrTotal > workHours ? 'OT' : 'REG') : 'INC');// specify attendance status: 'OVERTIME', 'REGULAR', 'UNDERTIME'
+        _obj['verify'] = elem.status;
 
         _obj['date'] = (elem.timings[0].input).substr(0, 10);
+        _obj['daytype'] = dayoffs.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Day Off' : 'Work Day';
 
         return _obj;
     });
