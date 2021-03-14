@@ -229,7 +229,7 @@ function attendance_formatted (data) {
         _obj['verify'] = elem.status;
 
         _obj['date'] = (elem.timings[0].input).substr(0, 10);
-        _obj['daytype'] = dayoffs.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Day Off' : 'Work Day';
+        _obj['daytype'] = dayoffs.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Weekend' : 'Work Day';
 
         return _obj;
     });

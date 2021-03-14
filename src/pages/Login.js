@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Dimensions, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { Alert, Dimensions, KeyboardAvoidingView, Modal, Platform, StyleSheet } from 'react-native';
 import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
 import theme from '../assets/theme';
@@ -9,6 +9,7 @@ const { height, width } = Dimensions.get('window');
 export default function Login({ navigation }) {
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
+	const [ configVisible, setConfigVisible] = useState(false);
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -16,7 +17,7 @@ export default function Login({ navigation }) {
 			<NavBar
 				title="Bizzyness"
                 right={(
-					<Icon name="settings" family="ionicons" color="#303030" size={15} onPress={() => console.log('Turn On App Settings')} />
+					<Icon name="settings" family="ionicons" color="#303030" size={15} onPress={() => setConfigVisible(true)} />
                 )}
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
@@ -82,6 +83,22 @@ export default function Login({ navigation }) {
 					</Block> */}
 				</Block>
 			</KeyboardAvoidingView>
+
+			<Modal
+				animationType="fade"
+				transparent={true}
+				visible={configVisible}
+				onRequestClose={() => {
+					setConfigVisible(!configVisible);
+				}}
+			>
+				<Block flex style={styles.centeredView}>
+				<Block style={styles.modalView}>
+					<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
+					<Button onPress={() => setConfigVisible(!configVisible)}>Logout Business</Button>
+				</Block>
+				</Block>
+			</Modal>
       	</Block>
     );
 }
@@ -94,5 +111,25 @@ const styles = StyleSheet.create({
         paddingTop: theme.SIZES.BASE * 0.3,
         paddingHorizontal: theme.SIZES.BASE,
         backgroundColor: theme.COLORS.WHITE,
-    }
+    },
+	centeredView: {
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22
+	},
+	modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5
+	}
 });
