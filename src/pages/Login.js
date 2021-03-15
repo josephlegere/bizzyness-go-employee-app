@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Alert, Dimensions, KeyboardAvoidingView, Modal, Platform, StyleSheet } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
 import theme from '../assets/theme';
+
+import { tenantSignIn } from '../store/actions/tenant';
 
 const { height, width } = Dimensions.get('window');
 
@@ -10,6 +14,20 @@ export default function Login({ navigation }) {
 	const [ email, setEmail ] = useState('');
 	const [ password, setPassword ] = useState('');
 	const [ configVisible, setConfigVisible] = useState(false);
+	const dispatch = useDispatch();
+    const { tenant, loading, errors } = useSelector(state => state.tenantData);
+
+	const submit_tenant = () => {
+
+		dispatch(tenantSignIn({ email, password }))
+			.then(() => {
+				console.log(tenant);
+			})
+			.catch((err) => {
+                console.error(err);
+			});
+		
+	}
 
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
@@ -49,7 +67,7 @@ export default function Login({ navigation }) {
 						<Button
 							round
 							color="error"
-							onPress={() => navigation.navigate('Home')}
+							onPress={submit_tenant}
 							style={{ alignSelf: 'center' }}
 						>
 							Sign in
