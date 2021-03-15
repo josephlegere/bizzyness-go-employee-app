@@ -19,13 +19,7 @@ export default function Login({ navigation }) {
 
 	const submit_tenant = () => {
 
-		dispatch(tenantSignIn({ email, password }))
-			.then(() => {
-				console.log(tenant);
-			})
-			.catch((err) => {
-                console.error(err);
-			});
+		dispatch(tenantSignIn({ email, password }));
 		
 	}
 
