@@ -8,3 +8,8 @@ export const AUTH_TENANT = 'AUTH_TENANT';
 export const TENANT_PROCESSING = 'TENANT_PROCESSING';
 export const TENANT_LOGOUT = 'TENANT_LOGOUT';
 export const TENANT_ERROR = 'TENANT_ERROR';
+
+export const AUTH_USER = 'AUTH_USER';
+export const USER_PROCESSING = 'USER_PROCESSING';
+export const USER_LOGOUT = 'USER_LOGOUT';
+export const USER_ERROR = 'USER_ERROR';

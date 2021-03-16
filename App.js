@@ -19,6 +19,7 @@ import Login from './src/pages/Login';
 import Dashboard from './src/pages/Dashboard';
 import AttendanceAdd from './src/pages/AttendanceAdd';
 import store from './src/store';
+import { navigationRef } from './src/plugins/RootNavigation';
 
 const App: () => React$Node = () => {
 	
@@ -27,7 +28,7 @@ const App: () => React$Node = () => {
 	return (
 		<Provider store={store}>
 			<>
-				<NavigationContainer>
+				<NavigationContainer ref={navigationRef}>
 					<Stack.Navigator
 						screenOptions={{
 							headerShown: false

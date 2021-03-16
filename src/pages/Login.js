@@ -7,6 +7,7 @@ import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 import theme from '../assets/theme';
 
 import { tenantSignIn, tenantSignOut } from '../store/actions/tenant';
+import { userSignIn } from '../store/actions/user';
 
 const { height, width } = Dimensions.get('window');
 
@@ -14,7 +15,8 @@ export default function Login({ navigation }) {
 	const [ credentials, setCredentials ] = useState({});
 	const [ configVisible, setConfigVisible] = useState(false);
 	const dispatch = useDispatch();
-    const { tenant, loading, errors } = useSelector(state => state.tenantData);
+    const { tenant, loading: loading_tenant, errors: errors_tenant } = useSelector(state => state.tenantData);
+    const { user, loading: loading_user, errors: errors_user } = useSelector(state => state.userData);
 
 	const submit_tenant = () => {
 
@@ -23,10 +25,11 @@ export default function Login({ navigation }) {
 		
 	}
 
-	const submit_user = () => { //Authenticate user
+	const submit_user = () => { //Authenticate User
 
 		console.log(credentials);
-		navigation.navigate('Home');
+		dispatch(userSignIn(credentials, tenant.tenantid));
+		// navigation.navigate('Home');
 
 	}
 
@@ -38,12 +41,14 @@ export default function Login({ navigation }) {
 	}
 
 	const input_credentials = (type, value) => {
+		
 		let _credentials = credentials;
 
 		if (type === 'email') _credentials[type] = value;
 		else if (type === 'password') _credentials[type] = value;
 		
 		setCredentials(_credentials);
+
 	}
 
     return (
@@ -65,7 +70,7 @@ export default function Login({ navigation }) {
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
 
-			{ loading
+			{ loading_tenant || loading_user
 			? (
 				<Block flex style={{ justifyContent: "center" }}>
 					<ActivityIndicator size="large" color="#914c06" />
