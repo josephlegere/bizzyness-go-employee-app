@@ -1,8 +1,8 @@
-import { AUTH_TENANT, TENANT_ERROR } from '../types';
+import { AUTH_TENANT, TENANT_PROCESSING, TENANT_LOGOUT, TENANT_ERROR } from '../types';
 
 const initialState = {
     tenant: null,
-    loading: true
+    loading: false
 }
 
 export default function(state = initialState, action) {
@@ -10,14 +10,23 @@ export default function(state = initialState, action) {
     switch (action.type) {
 
         case AUTH_TENANT:
-            let { uid } = action.payload;
-            console.log(uid);
+            console.log(action.payload);
 
             return {
                 ...state,
-                tenant: uid,
+                tenant: action.payload,
                 loading: false
-
+            }
+        case TENANT_PROCESSING:
+            
+            return {
+                ...state,
+                loading: true
+            }
+        case TENANT_LOGOUT:
+            
+            return {
+                ...initialState
             }
         case TENANT_ERROR:
 

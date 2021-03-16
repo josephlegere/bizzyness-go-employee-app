@@ -1,26 +1,49 @@
 import React, { useState } from 'react';
-import { Alert, Dimensions, KeyboardAvoidingView, Modal, Platform, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, Platform, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
 import theme from '../assets/theme';
 
-import { tenantSignIn } from '../store/actions/tenant';
+import { tenantSignIn, tenantSignOut } from '../store/actions/tenant';
 
 const { height, width } = Dimensions.get('window');
 
 export default function Login({ navigation }) {
-	const [ email, setEmail ] = useState('');
-	const [ password, setPassword ] = useState('');
+	const [ credentials, setCredentials ] = useState({});
 	const [ configVisible, setConfigVisible] = useState(false);
 	const dispatch = useDispatch();
     const { tenant, loading, errors } = useSelector(state => state.tenantData);
 
 	const submit_tenant = () => {
 
-		dispatch(tenantSignIn({ email, password }));
+		console.log(credentials);
+		dispatch(tenantSignIn(credentials));
 		
+	}
+
+	const submit_user = () => { //Authenticate user
+
+		console.log(credentials);
+		navigation.navigate('Home');
+
+	}
+
+	const logout_tenant = (configVisible) => {
+
+		setConfigVisible(configVisible);
+		dispatch(tenantSignOut());
+
+	}
+
+	const input_credentials = (type, value) => {
+		let _credentials = credentials;
+
+		if (type === 'email') _credentials[type] = value;
+		else if (type === 'password') _credentials[type] = value;
+		
+		setCredentials(_credentials);
 	}
 
     return (
@@ -28,74 +51,97 @@ export default function Login({ navigation }) {
 			<Block style={{ marginTop: 20 }} />
 			<NavBar
 				title="Bizzyness"
-                right={(
-					<Icon name="settings" family="ionicons" color="#303030" size={15} onPress={() => setConfigVisible(true)} />
-                )}
+				right={(
+					<Block>
+						{ tenant
+						? (
+							<Icon name="settings" family="ionicons" color="#303030" size={15} onPress={() => setConfigVisible(true)} />
+						)
+						: (
+							<Block />
+						)}
+					</Block>
+				)}
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
-			<KeyboardAvoidingView style={styles.container} behavior="height" enabled>
-				<Block flex center style={{ marginTop: theme.SIZES.BASE * 4, marginBottom: -1 * (height / 20) }}>
-					<Text muted center size={theme.SIZES.FONT * 0.875} style={{ paddingHorizontal: theme.SIZES.BASE * 2.3 }}>
-						Will Place Business Name here, then Logo at the bottom
-					</Text>
-				</Block>
 
-				<Block flex={2} center space="evenly">
-					<Block flex={2}>
-						<Input
-							rounded
-							type="email-address"
-							placeholder="Email"
-							autoCapitalize="none"
-							style={{ width: width * 0.9 }}
-							onChangeText={text => setEmail(text)}
-						/>
-						<Input
-							rounded
-							password
-							viewPass
-							placeholder="Password"
-							style={{ width: width * 0.9 }}
-							onChangeText={text => setPassword(text)}
-						/>
-						<Button
-							round
-							color="error"
-							onPress={submit_tenant}
-							style={{ alignSelf: 'center' }}
-						>
-							Sign in
-						</Button>
-						{/* <Text
-							color={theme.COLORS.ERROR}
-							size={theme.SIZES.FONT * 0.75}
-							onPress={() => Alert.alert('Not implemented')}
-							style={{ alignSelf: 'flex-end', lineHeight: theme.SIZES.FONT * 2 }}
-						>
-							Forgot your password?
-						</Text> */}
+			{ loading
+			? (
+				<Block flex style={{ justifyContent: "center" }}>
+					<ActivityIndicator size="large" color="#914c06" />
+				</Block>
+			)
+			: (
+				<KeyboardAvoidingView style={styles.container} behavior="height" enabled>
+					<Block flex center style={{ marginTop: theme.SIZES.BASE * 4, marginBottom: -1 * (height / 20) }}>
+						<Text muted center size={theme.SIZES.FONT * 0.875} style={{ paddingHorizontal: theme.SIZES.BASE * 2.3 }}>
+							Will Place Business Name here, then Logo at the bottom
+						</Text>
 					</Block>
-					{/* <Block flex middle>
-						<Button
-							round
-							color="error"
-							onPress={() => Alert.alert(
-								'Sign in action',
-								`Email: ${email}
-								Password: ${password}`
-							)}
-						>
-							Sign in
-						</Button>
-						<Button color="transparent" shadowless onPress={() => navigation.navigate('Register')}>
-							<Text center color={theme.COLORS.ERROR} size={theme.SIZES.FONT * 0.75}>
-							{"Don't have an account? Sign Up"}
-							</Text>
-						</Button>
-					</Block> */}
-				</Block>
-			</KeyboardAvoidingView>
 
+					<Block flex={2} center space="evenly">
+
+						{ tenant
+						? (
+							<Block flex={2}>
+								<Input
+									rounded
+									type="email-address"
+									placeholder="Email"
+									autoCapitalize="none"
+									style={{ width: width * 0.9 }}
+									onChangeText={text => input_credentials('email', text)}
+								/>
+								<Input
+									rounded
+									password
+									viewPass
+									placeholder="Password"
+									style={{ width: width * 0.9 }}
+									onChangeText={text => input_credentials('password', text)}
+								/>
+								<Button
+									round
+									color="error"
+									onPress={submit_user}
+									style={{ alignSelf: 'center' }}
+								>
+									Sign in
+								</Button>
+							</Block>
+						)
+						: (
+							<Block flex={2}>
+								<Input
+									rounded
+									type="email-address"
+									placeholder="Email"
+									autoCapitalize="none"
+									style={{ width: width * 0.9 }}
+									onChangeText={text => input_credentials('email', text)}
+								/>
+								<Input
+									rounded
+									password
+									viewPass
+									placeholder="Password"
+									style={{ width: width * 0.9 }}
+									onChangeText={text => input_credentials('password', text)}
+								/>
+								<Button
+									round
+									color="error"
+									onPress={submit_tenant}
+									style={{ alignSelf: 'center' }}
+								>
+									Bizzyness Sign in
+								</Button>
+							</Block>
+						)}
+					</Block>
+				</KeyboardAvoidingView>
+			)}
+			
 			<Modal
 				animationType="fade"
 				transparent={true}
@@ -107,7 +153,7 @@ export default function Login({ navigation }) {
 				<Block flex style={styles.centeredView}>
 				<Block style={styles.modalView}>
 					<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
-					<Button onPress={() => setConfigVisible(!configVisible)}>Logout Business</Button>
+					<Button onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
 				</Block>
 				</Block>
 			</Modal>

@@ -4,7 +4,7 @@ import { GET_ATTENDANCE, ATTENDANCE_ERROR } from '../types';
 import { BASE_URL, ATTENDANCE_URL, CLIENT_TYPE } from '@env';
 
 export const getAttendance = () => async dispatch => {
-    console.log(BASE_URL);
+
     try {
         console.log('Attendance');
         const res = await axios.get(`${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/HiternQX1hmdvcxnrSIr/wNRypiPjVsbYicDxJipusZQmqSC3?service_uid=2001`, {
@@ -31,7 +31,6 @@ export const getAttendance = () => async dispatch => {
 
 export const addAttendance = (body) => async dispatch => {
 
-    console.log(BASE_URL);
     let { date, timings } = body;
 
     try {
