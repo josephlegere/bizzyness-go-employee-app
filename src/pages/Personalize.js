@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Block, Button, NavBar, Text } from 'galio-framework';
 import moment from 'moment';
 
 import theme from '../assets/theme';
 
-export default function Personalize() {
+import { userSignOut } from '../store/actions/user';
 
-	// console.log(attendance);
+export default function Personalize({ navigation }) {
+
+	const dispatch = useDispatch();
+
+	const logout_user = () => {
+
+		dispatch(userSignOut());
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
+
+	}
 
     return (
         <Block flex center>
@@ -20,7 +33,7 @@ export default function Personalize() {
             <Button
                 round
                 // color="error"
-                // onPress={() => navigation.navigate('Home')}
+                onPress={logout_user}
                 style={{ alignSelf: 'center' }}
             >
                 Log Out

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Modal, Platform, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+
+import auth from '@react-native-firebase/auth';
 
 import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
@@ -16,7 +18,26 @@ export default function Login({ navigation }) {
 	const [ configVisible, setConfigVisible] = useState(false);
 	const dispatch = useDispatch();
     const { tenant, loading: loading_tenant, errors: errors_tenant } = useSelector(state => state.tenantData);
-    const { user, loading: loading_user, errors: errors_user } = useSelector(state => state.userData);
+    const { user: user_store, loading: loading_user, errors: errors_user } = useSelector(state => state.userData);
+
+	useEffect(() => {
+		console.log(loading_tenant);
+		console.log(loading_user);
+		// console.log(tenant);
+		// console.log(user_store);
+		auth().onAuthStateChanged((user) => {
+			console.log(user);
+			console.log(tenant);
+			console.log(user_store);
+      		if (user_store) {
+				console.log('Hello');
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'Home' }],
+				});
+			}
+		});
+	}, []);
 
 	const submit_tenant = () => {
 
@@ -29,6 +50,7 @@ export default function Login({ navigation }) {
 
 		console.log(credentials);
 		dispatch(userSignIn(credentials, tenant.tenantid));
+		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
 
 	}

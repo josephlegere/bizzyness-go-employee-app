@@ -18,7 +18,8 @@ const Stack = createStackNavigator();
 import Login from './src/pages/Login';
 import Dashboard from './src/pages/Dashboard';
 import AttendanceAdd from './src/pages/AttendanceAdd';
-import store from './src/store';
+import { store, persistor } from './src/store';
+import { PersistGate } from 'redux-persist/integration/react';
 import { navigationRef } from './src/plugins/RootNavigation';
 
 const App: () => React$Node = () => {
@@ -27,19 +28,21 @@ const App: () => React$Node = () => {
 
 	return (
 		<Provider store={store}>
-			<>
-				<NavigationContainer ref={navigationRef}>
-					<Stack.Navigator
-						screenOptions={{
-							headerShown: false
-						}}
-					>
-						<Stack.Screen name="Login" component={Login} />
-						<Stack.Screen name="Home" component={Dashboard} />
-						<Stack.Screen name="Add Attendance" component={AttendanceAdd} />
-					</Stack.Navigator>
-				</NavigationContainer>
-			</>
+			<PersistGate loading={null} persistor={persistor}>
+				<>
+					<NavigationContainer ref={navigationRef}>
+						<Stack.Navigator
+							screenOptions={{
+								headerShown: false
+							}}
+						>
+							<Stack.Screen name="Login" component={Login} />
+							<Stack.Screen name="Home" component={Dashboard} />
+							<Stack.Screen name="Add Attendance" component={AttendanceAdd} />
+						</Stack.Navigator>
+					</NavigationContainer>
+				</>
+			</PersistGate>
 		</Provider>
 	);
 };
