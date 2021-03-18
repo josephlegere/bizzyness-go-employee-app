@@ -29,7 +29,8 @@ export default function Login({ navigation }) {
 			console.log(user);
 			console.log(tenant);
 			console.log(user_store);
-      		if (user_store) {
+
+      		if (user) {
 				console.log('Hello');
 				navigation.reset({
 					index: 0,
@@ -39,17 +40,19 @@ export default function Login({ navigation }) {
 		});
 	}, []);
 
-	const submit_tenant = () => {
+	// const submit_tenant = () => {
 
-		console.log(credentials);
-		dispatch(tenantSignIn(credentials));
+	// 	console.log(credentials);
+	// 	dispatch(tenantSignIn(credentials));
 		
-	}
+	// }
 
 	const submit_user = () => { //Authenticate User
 
+		let tenantid = tenant ? tenant.tenantid : null ;
+
 		console.log(credentials);
-		dispatch(userSignIn(credentials, tenant.tenantid));
+		dispatch(userSignIn(credentials, tenantid));
 		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
 
@@ -92,7 +95,7 @@ export default function Login({ navigation }) {
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
 
-			{ loading_tenant || loading_user
+			{ loading_user
 			? (
 				<Block flex style={{ justifyContent: "center" }}>
 					<ActivityIndicator size="large" color="#914c06" />
@@ -108,61 +111,40 @@ export default function Login({ navigation }) {
 
 					<Block flex={2} center space="evenly">
 
+						<Block flex={2}>
+							<Input
+								rounded
+								type="email-address"
+								placeholder="Email"
+								autoCapitalize="none"
+								style={{ width: width * 0.9 }}
+								onChangeText={text => input_credentials('email', text)}
+							/>
+							<Input
+								rounded
+								password
+								viewPass
+								placeholder="Password"
+								style={{ width: width * 0.9 }}
+								onChangeText={text => input_credentials('password', text)}
+							/>
+							<Button
+								round
+								color="error"
+								onPress={submit_user}
+								style={{ alignSelf: 'center' }}
+							>
+								Sign in
+							</Button>
+						</Block>
 						{ tenant
 						? (
-							<Block flex={2}>
-								<Input
-									rounded
-									type="email-address"
-									placeholder="Email"
-									autoCapitalize="none"
-									style={{ width: width * 0.9 }}
-									onChangeText={text => input_credentials('email', text)}
-								/>
-								<Input
-									rounded
-									password
-									viewPass
-									placeholder="Password"
-									style={{ width: width * 0.9 }}
-									onChangeText={text => input_credentials('password', text)}
-								/>
-								<Button
-									round
-									color="error"
-									onPress={submit_user}
-									style={{ alignSelf: 'center' }}
-								>
-									Sign in
-								</Button>
+							<Block flex>
+								<Text>Other Methods to Sign In</Text>
 							</Block>
 						)
 						: (
 							<Block flex={2}>
-								<Input
-									rounded
-									type="email-address"
-									placeholder="Email"
-									autoCapitalize="none"
-									style={{ width: width * 0.9 }}
-									onChangeText={text => input_credentials('email', text)}
-								/>
-								<Input
-									rounded
-									password
-									viewPass
-									placeholder="Password"
-									style={{ width: width * 0.9 }}
-									onChangeText={text => input_credentials('password', text)}
-								/>
-								<Button
-									round
-									color="error"
-									onPress={submit_tenant}
-									style={{ alignSelf: 'center' }}
-								>
-									Bizzyness Sign in
-								</Button>
 							</Block>
 						)}
 					</Block>
@@ -178,10 +160,11 @@ export default function Login({ navigation }) {
 				}}
 			>
 				<Block flex style={styles.centeredView}>
-				<Block style={styles.modalView}>
-					<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
-					<Button onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
-				</Block>
+					<Block style={styles.modalView}>
+						<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
+						<Button onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
+            			<Button onlyIcon icon="remove" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={() => setConfigVisible(!configVisible)} style={styles.modalClear} ></Button>
+					</Block>
 				</Block>
 			</Modal>
       	</Block>
@@ -216,5 +199,11 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.25,
 		shadowRadius: 4,
 		elevation: 5
-	}
+	},
+    modalClear: {
+        position: 'absolute',
+        top: -17,
+        right: -17,
+        zIndex: 999
+    }
 });

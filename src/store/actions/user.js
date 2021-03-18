@@ -1,4 +1,4 @@
-import { AUTH_USER, USER_PROCESSING, USER_LOGOUT, USER_ERROR } from '../types';
+import { AUTH_USER, USER_PROCESSING, USER_LOGOUT, USER_ERROR, AUTH_TENANT } from '../types';
 
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -17,41 +17,56 @@ export const userSignIn = (access, tenant_source) => dispatch => {
         .then(async () => {
             
             let { email, uid } = auth().currentUser; //displayName is for testing purposes
-            let _details = null;
+            let _user = null;
+            let _tenant = null;
 
             await firestore()
                 .collection('users')
                 .doc(uid)
                 .get()
                 .then(doc => {
-                    let _user = doc.data();
+                    let _data = doc.data();
                     
-                    _details = {
+                    _user = {
                         id: `users/${uid}`,
-                        name: _user.name,
-                        employee_code: _user.employee_code,
-                        account: _user.tenant_group.account,
-                        tenantid: _user.tenant_group.tenantid,
-                        system_config: _user.tenant_group.system_config
+                        name: _data.name,
+                        employee_code: _data.employee_code
+                    }
+
+                    _tenant = {
+                        representative: {
+                            uid,
+                            name: _data.name
+                        },
+                        account: _data.tenant_group.account,
+                        tenantid: _data.tenant_group.tenantid,
+                        system_config: _data.tenant_group.system_config
                     }
                 })
                 .catch(err => {
                     console.log("Error getting documents", err);
                 });
             
-            let { id, name, employee_code, account, tenantid, system_config } = _details;
-			let toCommit = { email, uid, name, id, account, tenantid, system_config };
+            let { id, name, employee_code } = _user;
+			let _user_commit = { email, uid, name, id };
+            let { tenantid } = _tenant;
 
-            if (tenant_source !== tenantid) throw 'This user doesn\'t represent this company!';
+            if (tenant_source && tenant_source !== tenantid) throw 'This user doesn\'t represent this company!';
 
-			if (employee_code) toCommit = { ...toCommit, employee_code };
+			if (employee_code) _user_commit = { ..._user_commit, employee_code };
 
             dispatch({
                 type: AUTH_USER,
-                payload: toCommit
+                payload: _user_commit
             });
 
-            RootNavigation.navigate('Home');
+            if (tenant_source) {
+                dispatch({
+                    type: AUTH_TENANT,
+                    payload: _tenant
+                });
+            }
+
         })
         .catch ((err) => {
             console.error(err);
