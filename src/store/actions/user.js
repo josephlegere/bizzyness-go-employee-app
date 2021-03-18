@@ -9,6 +9,8 @@ export const userSignIn = (access, tenant_source) => dispatch => {
     
     let { email, password } = access;
 
+    if (email === '' || email === null || password === '' || password === null || Object.keys(access).length === 0)  throw 'Please complete your credentials!';
+
     dispatch({
         type: USER_PROCESSING
     });
@@ -60,7 +62,7 @@ export const userSignIn = (access, tenant_source) => dispatch => {
                 payload: _user_commit
             });
 
-            if (tenant_source) {
+            if (!tenant_source) {
                 dispatch({
                     type: AUTH_TENANT,
                     payload: _tenant

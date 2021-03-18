@@ -8,8 +8,9 @@ import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 
 import theme from '../assets/theme';
 
-import { tenantSignIn, tenantSignOut } from '../store/actions/tenant';
+import { tenantSignOut } from '../store/actions/tenant';
 import { userSignIn } from '../store/actions/user';
+import { USER_TASK_FINISHED } from '../store/types';
 
 const { height, width } = Dimensions.get('window');
 
@@ -23,15 +24,17 @@ export default function Login({ navigation }) {
 	useEffect(() => {
 		console.log(loading_tenant);
 		console.log(loading_user);
-		// console.log(tenant);
-		// console.log(user_store);
+		
 		auth().onAuthStateChanged((user) => {
 			console.log(user);
 			console.log(tenant);
 			console.log(user_store);
 
+			dispatch({
+                type: USER_TASK_FINISHED
+            });
+
       		if (user) {
-				console.log('Hello');
 				navigation.reset({
 					index: 0,
 					routes: [{ name: 'Home' }],
@@ -39,13 +42,6 @@ export default function Login({ navigation }) {
 			}
 		});
 	}, []);
-
-	// const submit_tenant = () => {
-
-	// 	console.log(credentials);
-	// 	dispatch(tenantSignIn(credentials));
-		
-	// }
 
 	const submit_user = () => { //Authenticate User
 
@@ -140,7 +136,7 @@ export default function Login({ navigation }) {
 						{ tenant
 						? (
 							<Block flex>
-								<Text>Other Methods to Sign In</Text>
+								<Text onPress={() => console.log('sign-in options')}>Sign-In Options</Text>
 							</Block>
 						)
 						: (
@@ -163,7 +159,7 @@ export default function Login({ navigation }) {
 					<Block style={styles.modalView}>
 						<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
 						<Button onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
-            			<Button onlyIcon icon="remove" iconFamily="ionicons" iconSize={12} color="#bd2e24" iconColor="#fff" onPress={() => setConfigVisible(!configVisible)} style={styles.modalClear} ></Button>
+            			<Button onlyIcon icon="clear" iconFamily="ionicons" iconSize={12} color="#303030" iconColor="#fff" onPress={() => setConfigVisible(!configVisible)} style={styles.modalClear} ></Button>
 					</Block>
 				</Block>
 			</Modal>

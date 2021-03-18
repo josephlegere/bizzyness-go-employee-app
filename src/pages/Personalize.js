@@ -14,12 +14,16 @@ export default function Personalize({ navigation }) {
 
 	const logout_user = () => {
 
-		dispatch(userSignOut());
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-        });
-
+		dispatch(userSignOut())
+            .then(() => {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            });
 	}
 
     return (

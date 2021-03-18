@@ -72,17 +72,6 @@ export const tenantSignIn = (access) => dispatch => {
 export const tenantSignOut = () => async dispatch => {
 
     dispatch({
-        type: TENANT_PROCESSING
-    });
-
-    auth().onAuthStateChanged(async (user) => {
-        if (user) {
-            await auth()
-                .signOut();
-        }
-    });
-
-    dispatch({
         type: TENANT_LOGOUT
     });
 

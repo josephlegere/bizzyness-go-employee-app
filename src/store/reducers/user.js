@@ -1,8 +1,8 @@
-import { AUTH_USER, USER_PROCESSING, USER_LOGOUT, USER_ERROR } from '../types';
+import { AUTH_USER, USER_PROCESSING, USER_TASK_FINISHED, USER_LOGOUT, USER_ERROR } from '../types';
 
 const initialState = {
     user: null,
-    loading: false
+    loading: true
 }
 
 export default function(state = initialState, action) {
@@ -22,6 +22,12 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 loading: true
+            }
+        case USER_TASK_FINISHED:
+            
+            return {
+                ...state,
+                loading: false
             }
         case USER_LOGOUT:
             

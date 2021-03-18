@@ -11,5 +11,6 @@ export const TENANT_ERROR = 'TENANT_ERROR';
 
 export const AUTH_USER = 'AUTH_USER';
 export const USER_PROCESSING = 'USER_PROCESSING';
+export const USER_TASK_FINISHED = 'USER_TASK_FINISHED';
 export const USER_LOGOUT = 'USER_LOGOUT';
 export const USER_ERROR = 'USER_ERROR';
