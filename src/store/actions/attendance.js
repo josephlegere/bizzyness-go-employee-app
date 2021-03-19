@@ -3,17 +3,28 @@ import axios from 'axios';
 import { GET_ATTENDANCE, ATTENDANCE_ERROR } from '../types';
 import { BASE_URL, ATTENDANCE_URL, CLIENT_TYPE } from '@env';
 
-export const getAttendance = () => async dispatch => {
+export const getAttendance = (tenant, user) => async dispatch => {
 
     try {
-        console.log('Attendance');
-        const res = await axios.get(`${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/HiternQX1hmdvcxnrSIr/wNRypiPjVsbYicDxJipusZQmqSC3?service_uid=2001`, {
+        console.log(tenant, user);
+
+        let { tenantid, system_config } = tenant;
+        let { uid } = user;
+
+        let _tenantid = tenantid.split('/')[0];
+
+        let url = `${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/${_tenantid}/${uid}`;
+        console.log(url);
+
+        if (user.service_unique) url += `?service_uid=${user.service_unique}`;
+
+        const res = await axios.get(url, {
             headers: {
-                external_api: 'http://gemserve.com.qa/gemserve/gemrest',
-                server_type: 'hybrid_lamp_fire'
+                external_api: system_config.server_host.api,
+                server_type: system_config.server_type.type
             }
         });
-        // console.log(res.data);
+        console.log(res.data);
         
         dispatch( {
             type: GET_ATTENDANCE,
@@ -29,25 +40,38 @@ export const getAttendance = () => async dispatch => {
 
 }
 
-export const addAttendance = (body) => async dispatch => {
-
-    let { date, timings } = body;
+export const addAttendance = (body, tenant, user) => async dispatch => {
 
     try {
-        console.log('Add Attendance');
-        const res = await axios.post(`${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/HiternQX1hmdvcxnrSIr/wNRypiPjVsbYicDxJipusZQmqSC3`, {
+        
+        let { date, timings } = body;
+
+        let { tenantid, system_config, account } = tenant;
+        let { uid, id, name } = user;
+
+        let _tenantid = tenantid.split('/')[0];
+
+        let url = `${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/${_tenantid}/${uid}`;
+
+        let data = {
             date,
-            service_uniq: "1866R8U5ac99de43b85c",
             employee: {                
-                name: "Edilberto Baslot",
-                id: "users/wNRypiPjVsbYicDxJipusZQmqSC3",
-                account: "Goodwill Electrical and Mechanical Services"
+                name,
+                id,
+                account
             },
             timings
-        }, {
+        }
+
+        if (user.service_unique) {
+            let { service_unique } = user;
+            data = { ...data, service_unique };
+        }
+
+        const res = await axios.post(url, data, {
             headers: {
-                external_api: 'http://gemserve.com.qa/gemserve/gemrest',
-                server_type: 'hybrid_lamp_fire'
+                external_api: system_config.server_host.api,
+                server_type: system_config.server_type.type
             }
         });
         // console.log(res.data);

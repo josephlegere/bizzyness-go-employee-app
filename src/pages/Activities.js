@@ -14,17 +14,19 @@ const { height, width } = Dimensions.get('window');
 export default function Activities({ navigation }) {
 	const [refreshing, setRefreshing] = React.useState(false);
 	const dispatch = useDispatch();
+    const { tenant } = useSelector(state => state.tenantData);
+    const { user: user_store } = useSelector(state => state.userData);
     const { attendance, loading, errors } = useSelector(state => state.attendanceList);
 
 	useEffect(() => {
 
-		dispatch(getAttendance());
+		dispatch(getAttendance(tenant, user_store));
 
 	}, [dispatch]);
 
 	const reloadActivity = () => {
 		setRefreshing(true);
-		dispatch(getAttendance()).then(() => {
+		dispatch(getAttendance(tenant, user_store)).then(() => {
 			setRefreshing(false);
 		});
 	}
@@ -113,19 +115,19 @@ export default function Activities({ navigation }) {
 				</Block>
 			)
 			: (
-					<FlatList
-						data={attendance}
-						keyExtractor={(item, index) => index.toString()}
-						renderItem={({item}) => <Activity attend={item} />}
-						style={{ marginBottom: 40 }}
-						refreshControl={
-							<RefreshControl
-								refreshing={refreshing}
-								onRefresh={() => reloadActivity()}
-							/>
-						}
-						ListFooterComponent={<Block style={{ height: 20 }}></Block>}
-					/>
+				<FlatList
+					data={attendance}
+					keyExtractor={(item, index) => index.toString()}
+					renderItem={({item}) => <Activity attend={item} />}
+					style={{ marginBottom: 40 }}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={() => reloadActivity()}
+						/>
+					}
+					ListFooterComponent={<Block style={{ height: 20 }}></Block>}
+				/>
 			)}
 			<Block style={styles.fabContainer}>
 				<Button onlyIcon icon="timer" iconFamily="ionicons" iconSize={40} color="#914c06" iconColor="#fff" style={styles.fab} onPress={() => navigation.navigate('Add Attendance')}></Button>

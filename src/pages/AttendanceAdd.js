@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Button, Card, Icon, Input, NavBar, Toast, Text } from 'galio-framework';
 import moment from 'moment';
@@ -16,6 +16,8 @@ const { height, width } = Dimensions.get('window');
 export default function AttendanceAdd({ navigation }) {
 
 	const dispatch = useDispatch();
+    const { tenant } = useSelector(state => state.tenantData);
+    const { user: user_store } = useSelector(state => state.userData);
     
     const [ dayType, setDayType ] = useState('Work Day');
     const [ date, setDate ] = useState(moment().toDate());
@@ -42,7 +44,7 @@ export default function AttendanceAdd({ navigation }) {
         console.log(date);
         console.log(_timings);
 
-        dispatch(addAttendance({ date, timings: _timings }))
+        dispatch(addAttendance({ date, timings: _timings }, tenant, user_store))
             .then(() => {
                 setSuccess(true);
                 setTimeout(() => {

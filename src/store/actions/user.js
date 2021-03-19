@@ -32,7 +32,8 @@ export const userSignIn = (access, tenant_source) => dispatch => {
                     _user = {
                         id: `users/${uid}`,
                         name: _data.name,
-                        employee_code: _data.employee_code
+                        employee_code: _data.employee_code,
+                        service_unique: _data.service_unique
                     }
 
                     _tenant = {
@@ -49,13 +50,14 @@ export const userSignIn = (access, tenant_source) => dispatch => {
                     console.log("Error getting documents", err);
                 });
             
-            let { id, name, employee_code } = _user;
+            let { id, name, employee_code, service_unique } = _user;
 			let _user_commit = { email, uid, name, id };
             let { tenantid } = _tenant;
 
             if (tenant_source && tenant_source !== tenantid) throw 'This user doesn\'t represent this company!';
 
 			if (employee_code) _user_commit = { ..._user_commit, employee_code };
+			if (service_unique) _user_commit = { ..._user_commit, service_unique };
 
             dispatch({
                 type: AUTH_USER,
