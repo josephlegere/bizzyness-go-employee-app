@@ -11,18 +11,21 @@ export const getAttendance = (tenant, user) => async dispatch => {
         let { tenantid, system_config } = tenant;
         let { uid } = user;
 
-        let _tenantid = tenantid.split('/')[0];
+        let _tenantid = tenantid.split('/')[1];
 
         let url = `${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/${_tenantid}/${uid}`;
         console.log(url);
 
+        let headers = {
+            server_type: system_config.server_type.type
+        }
+
         if (user.service_unique) url += `?service_uid=${user.service_unique}`;
 
+        if (system_config.server_host) headers = { ...headers, external_api: system_config.server_host.api };
+
         const res = await axios.get(url, {
-            headers: {
-                external_api: system_config.server_host.api,
-                server_type: system_config.server_type.type
-            }
+            headers
         });
         console.log(res.data);
         
@@ -49,7 +52,8 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
         let { tenantid, system_config, account } = tenant;
         let { uid, id, name } = user;
 
-        let _tenantid = tenantid.split('/')[0];
+        let _tenantid = tenantid.split('/')[1];
+        console.log(tenantid);
 
         let url = `${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/${_tenantid}/${uid}`;
 
@@ -63,18 +67,21 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
             timings
         }
 
-        if (user.service_unique) {
-            let { service_unique } = user;
-            data = { ...data, service_unique };
+        let headers = {
+            server_type: system_config.server_type.type
         }
 
+        if (user.service_unique) data = { ...data, service_unique: user.service_unique };
+
+        if (system_config.server_host) headers = { ...headers, external_api: system_config.server_host.api };
+
+        console.log(url);
+        console.log(data);
+
         const res = await axios.post(url, data, {
-            headers: {
-                external_api: system_config.server_host.api,
-                server_type: system_config.server_type.type
-            }
+            headers
         });
-        // console.log(res.data);
+        console.log(res.data);
         
         dispatch( {
             type: GET_ATTENDANCE,
