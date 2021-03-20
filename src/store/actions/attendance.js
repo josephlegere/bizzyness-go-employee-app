@@ -27,7 +27,7 @@ export const getAttendance = (tenant, user) => async dispatch => {
         const res = await axios.get(url, {
             headers
         });
-        console.log(res.data);
+        // console.log(res.data);
         
         dispatch( {
             type: GET_ATTENDANCE,
@@ -53,7 +53,6 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
         let { uid, id, name } = user;
 
         let _tenantid = tenantid.split('/')[1];
-        console.log(tenantid);
 
         let url = `${BASE_URL}${ATTENDANCE_URL}/${CLIENT_TYPE}/${_tenantid}/${uid}`;
 

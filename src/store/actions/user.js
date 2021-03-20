@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import * as RootNavigation from '../../plugins/RootNavigation';
 
-export const userSignIn = (access, tenant_source) => dispatch => {
+export const userSignIn = (access, tenant_source) => async dispatch => {
     
     let { email, password } = access;
 
@@ -15,7 +15,7 @@ export const userSignIn = (access, tenant_source) => dispatch => {
         type: USER_PROCESSING
     });
 
-    auth().signInWithEmailAndPassword(email, password)
+    await auth().signInWithEmailAndPassword(email, password)
         .then(async () => {
             
             let { email, uid } = auth().currentUser; //displayName is for testing purposes

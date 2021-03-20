@@ -31,14 +31,17 @@ export default function Login({ navigation }) {
 			console.log(user_store);
 
 			dispatch({
-                type: USER_TASK_FINISHED
-            });
+				type: USER_TASK_FINISHED
+			});
 
-      		if (user) {
-				navigation.reset({
-					index: 0,
-					routes: [{ name: 'Home' }],
-				});
+			if (user_store) {
+
+				if (user) {
+					navigation.reset({
+						index: 0,
+						routes: [{ name: 'Home' }],
+					});
+				}
 			}
 		});
 	}, []);
@@ -48,7 +51,12 @@ export default function Login({ navigation }) {
 		let tenantid = tenant ? tenant.tenantid : null ;
 
 		console.log(credentials);
-		dispatch(userSignIn(credentials, tenantid));
+		dispatch(userSignIn(credentials, tenantid)).then(() => {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }],
+            });
+		});
 		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
 
