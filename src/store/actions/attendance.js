@@ -6,7 +6,7 @@ import { BASE_URL, ATTENDANCE_URL, CLIENT_TYPE } from '@env';
 export const getAttendance = (tenant, user) => async dispatch => {
 
     try {
-        console.log(tenant, user);
+        // console.log(tenant, user);
 
         let { tenantid, system_config } = tenant;
         let { uid } = user;
