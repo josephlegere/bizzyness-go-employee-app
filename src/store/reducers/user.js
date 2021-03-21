@@ -38,7 +38,7 @@ export default function(state = initialState, action) {
 
             return {
                 loading: false, 
-                error: action.payload 
+                error: action.payload
             }
         default: return state
     }
