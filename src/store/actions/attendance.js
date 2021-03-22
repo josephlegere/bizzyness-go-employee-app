@@ -27,11 +27,12 @@ export const getAttendance = (tenant, user) => async dispatch => {
         const res = await axios.get(url, {
             headers
         });
+        let { attendance } = res.data.data;
         // console.log(res.data);
         
         dispatch( {
             type: GET_ATTENDANCE,
-            payload: res.data
+            payload: { attendance, daysoff: tenant.daysoff }
         });
     }
     catch (error) {

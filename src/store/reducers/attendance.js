@@ -12,8 +12,8 @@ export default function(state = initialState, action) {
     switch (action.type) {
 
         case GET_ATTENDANCE:
-            let { attendance, dayoffs } = action.payload.data;
-            let _formatted = attendance_formatted({ attendance: attendance.list, dayoffs: dayoffs.list });
+            let { attendance, daysoff } = action.payload;
+            let _formatted = attendance_formatted({ attendance: attendance.list, daysoff });
 
             return {
                 ...state,
@@ -31,7 +31,7 @@ export default function(state = initialState, action) {
 }
 
 function attendance_formatted (data) {
-    let { attendance, dayoffs } = data;
+    let { attendance, daysoff } = data;
     return attendance.map((elem) => {
         let _obj = {};
         
@@ -155,7 +155,7 @@ function attendance_formatted (data) {
         overtime_timings.list = [];
         
         // determine if its a weekend
-        if (dayoffs.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += 8;
+        if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += 8;
         
         // DON'T INCLUDE ANY CONDITION IF TIMING LIST HAS LENGTH GREATER THAN 0
         // loop through each sets then accumulate the work hours to a "variable" to determine attendance status
@@ -229,7 +229,7 @@ function attendance_formatted (data) {
         _obj['verify'] = elem.status;
 
         _obj['date'] = (elem.timings[0].input).substr(0, 10);
-        _obj['daytype'] = dayoffs.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Weekend' : 'Work Day';
+        _obj['daytype'] = daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Weekend' : 'Work Day';
 
         return _obj;
     });

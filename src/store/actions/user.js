@@ -51,7 +51,8 @@ export const userSignIn = (access, tenant_source) => async dispatch => {
             },
             account: _data.tenant_group.account,
             tenantid: _data.tenant_group.tenantid,
-            system_config: _data.tenant_group.system_config
+            system_config: _data.tenant_group.system_config,
+            daysoff: _data.tenant_group.daysoff
         }
         
         let { id, name, employee_code, service_unique } = _user;

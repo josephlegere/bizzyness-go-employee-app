@@ -62,7 +62,7 @@ export default function Login({ navigation }) {
 			console.log(err);
 		})
 		.finally(() => {
-			setCredentials({ email: credentials.email });
+			setCredentials({});
 		});
 		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
