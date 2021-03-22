@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { GET_ATTENDANCE, ATTENDANCE_ERROR } from '../types'
+import { GET_ATTENDANCE, ATTENDANCE_DEFAULT, ATTENDANCE_ERROR } from '../types'
 
 const initialState = {
     attendance: [],
@@ -20,6 +20,11 @@ export default function(state = initialState, action) {
                 attendance: _formatted,
                 loading: false
 
+            }
+        case ATTENDANCE_DEFAULT:
+            
+            return {
+                ...initialState
             }
         case ATTENDANCE_ERROR:
             return {

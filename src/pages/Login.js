@@ -9,12 +9,13 @@ import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
 import theme from '../assets/theme';
 
 import { tenantSignOut } from '../store/actions/tenant';
-import { userSignIn } from '../store/actions/user';
+import { signEmailAndPassword, signEmployeeidAndPassword } from '../store/actions/user';
 import { USER_TASK_FINISHED } from '../store/types';
 
 const { height, width } = Dimensions.get('window');
 
 export default function Login({ navigation }) {
+	const [ signOptions, setSignOptions ] = useState('emailandpassword');
 	const [ credentials, setCredentials ] = useState({});
 	const [ configVisible, setConfigVisible] = useState(false);
 	const dispatch = useDispatch();
@@ -24,6 +25,8 @@ export default function Login({ navigation }) {
 	useEffect(() => {
 		console.log(loading_tenant);
 		console.log(loading_user);
+		
+		if (tenant) setSignOptions('employeeid');
 		
 		auth().onAuthStateChanged((user) => {
 			console.log(user);
@@ -51,19 +54,37 @@ export default function Login({ navigation }) {
 		let tenantid = tenant ? tenant.tenantid : null ;
 
 		console.log(credentials, tenantid);
-		dispatch(userSignIn(credentials, tenantid))
-		.then(() => {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }],
-            });
-		})
-		.catch((err) => {
-			console.log(err);
-		})
-		.finally(() => {
-			setCredentials({});
-		});
+
+		if (signOptions === 'employeeid') {
+			dispatch(signEmployeeidAndPassword(credentials, tenantid))
+			.then(() => {
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'Home' }],
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			})
+			.finally(() => {
+				setCredentials({});
+			});
+		}
+		else {
+			dispatch(signEmailAndPassword(credentials, tenantid))
+			.then(() => {
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'Home' }],
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			})
+			.finally(() => {
+				setCredentials({});
+			});
+		}
 		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
 
@@ -72,6 +93,8 @@ export default function Login({ navigation }) {
 	const logout_tenant = (configVisible) => {
 
 		setConfigVisible(configVisible);
+		setSignOptions('emailandpassword');
+		setCredentials({});
 		dispatch(tenantSignOut());
 
 	}
@@ -79,10 +102,7 @@ export default function Login({ navigation }) {
 	const input_credentials = (type, value) => {
 		
 		let _credentials = credentials;
-
-		if (type === 'email') _credentials[type] = value;
-		else if (type === 'password') _credentials[type] = value;
-		
+		_credentials[type] = value;
 		setCredentials(_credentials);
 
 	}
@@ -115,30 +135,70 @@ export default function Login({ navigation }) {
 			: (
 				<KeyboardAvoidingView style={styles.container} behavior="height" enabled>
 					<Block flex center style={{ marginTop: theme.SIZES.BASE * 4, marginBottom: -1 * (height / 20) }}>
-						<Text muted center size={theme.SIZES.FONT * 0.875} style={{ paddingHorizontal: theme.SIZES.BASE * 2.3 }}>
-							Will Place Business Name here, then Logo at the bottom
-						</Text>
+						{ tenant
+						? (
+							<Text h6 bold color="#000" center style={{ paddingHorizontal: theme.SIZES.BASE * 2.3 }}>
+								{tenant.account}
+							</Text>
+						)
+						: (
+							<Text h6 bold color="#914c06" center style={{ paddingHorizontal: theme.SIZES.BASE * 2.3 }}>
+								Bizzyness Go - Employee App
+							</Text>
+						)}
 					</Block>
 
 					<Block flex={2} center space="evenly">
 
 						<Block flex={2}>
-							<Input
-								rounded
-								type="email-address"
-								placeholder="Email"
-								autoCapitalize="none"
-								style={{ width: width * 0.9 }}
-								onChangeText={text => input_credentials('email', text)}
-							/>
-							<Input
-								rounded
-								password
-								viewPass
-								placeholder="Password"
-								style={{ width: width * 0.9 }}
-								onChangeText={text => input_credentials('password', text)}
-							/>
+							{ signOptions === 'emailandpassword'
+							? (
+								<Block>
+									
+									<Text>Email</Text>
+									<Input
+										rounded
+										type="email-address"
+										placeholder="Email"
+										autoCapitalize="none"
+										style={{ width: width * 0.9 }}
+										onChangeText={text => input_credentials('email', text)}
+									/>
+									
+									<Text>Password</Text>
+									<Input
+										rounded
+										password
+										viewPass
+										placeholder="Password"
+										style={{ width: width * 0.9 }}
+										onChangeText={text => input_credentials('password', text)}
+									/>
+								</Block>
+							)
+							: (
+								<Block>
+
+									<Text>Employee ID</Text>
+									<Input
+										rounded
+										type="number-pad"
+										placeholder="Employee ID"
+										style={{ width: width * 0.9 }}
+										onChangeText={text => input_credentials('employeeid', text)}
+									/>
+									
+									<Text>Password</Text>
+									<Input
+										rounded
+										password
+										viewPass
+										placeholder="Password"
+										style={{ width: width * 0.9 }}
+										onChangeText={text => input_credentials('password', text)}
+									/>
+								</Block>
+							)}
 							<Button
 								round
 								color="error"
@@ -151,7 +211,23 @@ export default function Login({ navigation }) {
 						{ tenant
 						? (
 							<Block flex>
-								<Text onPress={() => console.log('sign-in options')}>Sign-In Options</Text>
+							{ signOptions === 'emailandpassword'
+								? (
+									<Block flex>
+										<Text color="#914c06" onPress={() => {
+											setSignOptions('employeeid');
+											setCredentials({});
+										}}>Sign-In with Employee ID</Text>
+									</Block>
+								)
+								: (
+									<Block flex>
+										<Text color="#914c06" onPress={() => {
+											setSignOptions('emailandpassword');
+											setCredentials({});
+										}}>Sign-In with Email</Text>
+									</Block>
+							)}
 							</Block>
 						)
 						: (
