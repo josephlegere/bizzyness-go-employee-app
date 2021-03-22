@@ -249,7 +249,7 @@ export default function Login({ navigation }) {
 				<Block flex style={styles.centeredView}>
 					<Block style={styles.modalView}>
 						<Text style={{ marginBottom: 15, textAlign: "center" }}>Configurations</Text>
-						<Button onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
+						<Button color="#303030" onPress={() => logout_tenant(!configVisible)}>Logout Business</Button>
             			<Button onlyIcon icon="clear" iconFamily="ionicons" iconSize={12} color="#303030" iconColor="#fff" onPress={() => setConfigVisible(!configVisible)} style={styles.modalClear} ></Button>
 					</Block>
 				</Block>

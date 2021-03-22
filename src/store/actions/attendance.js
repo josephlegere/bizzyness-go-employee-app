@@ -17,12 +17,12 @@ export const getAttendance = (tenant, user) => async dispatch => {
         console.log(url);
 
         let headers = {
-            server_type: system_config.server_type.type
+            'server-type': system_config.server_type.type
         }
 
         if (user.service_unique) url += `?service_uid=${user.service_unique}`;
 
-        if (system_config.server_host) headers = { ...headers, external_api: system_config.server_host.api };
+        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api };
 
         const res = await axios.get(url, {
             headers
@@ -68,12 +68,12 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
         }
 
         let headers = {
-            server_type: system_config.server_type.type
+            'server-type': system_config.server_type.type
         }
 
         if (user.service_unique) data = { ...data, service_unique: user.service_unique };
 
-        if (system_config.server_host) headers = { ...headers, external_api: system_config.server_host.api };
+        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api };
 
         console.log(url);
         console.log(data);
