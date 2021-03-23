@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Block, Button, Icon, NavBar, Text, Toast } from 'galio-framework';
 import moment from 'moment';
 
+import firestore from '@react-native-firebase/firestore';
+
 import DateTimeSelector from '../components/DateTimeSelector';
 import AttendItemSet from '../components/AttendItemSet';
 import theme from '../assets/theme';
@@ -26,11 +28,38 @@ export default function AttendanceAdd({ navigation }) {
         { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
     ]);
     // tags are important information of the attend / timing object, e.g. Morning, Afternoon, Overtime, indicating that if the object is morning or has reach overtime
+    const [ specialDates, setSpecialDates ] = useState({});
     const [ loading, setLoading ] = useState(false);
     const [ isSuccess, setSuccess ] = useState(false);
     const [ isFailure, setFailure ] = useState(false);
 
     const requiredHours = 8;
+
+    useEffect(() => {
+
+        async function getSpecialDates () {
+
+            let tenantid = tenant.tenantid.split('/')[1];
+            let _specialDates = {};
+
+            let query = await firestore()
+                .collection('tenant_special_dates')
+                .doc(tenantid)
+                .collection('special_dates')
+                .get();
+
+            query.forEach(doc => {
+                let _date = doc.data();
+                _specialDates[moment(_date.date.toDate()).format('YYYYMMDD')] = _date;
+            });
+
+            setSpecialDates(_specialDates);
+
+        }
+
+        getSpecialDates();
+
+    }, [])
 
     const submit = () => {
         
@@ -124,6 +153,16 @@ export default function AttendanceAdd({ navigation }) {
             return accumulator + (moment(current.out, 'HH:mm:ss').diff(moment(current.in, 'HH:mm:ss'), 'hours', true));
         }, 0);
     }
+    
+    const adjustedHours = () => { // This includes weekends and holidays
+        if (tenant.daysoff.some(_day => parseInt(_day.num) === moment(date).day())) return 0;
+        else if (specialDates[moment(date).format('YYYYMMDD')]) {
+            let { type, hours } = specialDates[moment(date).format('YYYYMMDD')];
+            if (type === 'holiday') return 0;
+            if (type === 'specialtiming') return hours;
+        }
+        return requiredHours;
+    }
 
     return (
         <Block flex>
@@ -167,8 +206,8 @@ export default function AttendanceAdd({ navigation }) {
                 <Block flex style={{ margin: theme.SIZES.BASE }}>
                     <Block style={styles.header}>
                         <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
-                        <Text p bold style={ [hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
-                            {hoursTotal() > requiredHours ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= requiredHours ? ( hoursTotal() > requiredHours ? 'Overtime' : 'Regular' ) : 'Incomplete'}
+                        <Text p bold style={ [hoursTotal() >= adjustedHours() ? ( hoursTotal() > adjustedHours() ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
+                            {hoursTotal() > adjustedHours() ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= adjustedHours() ? ( hoursTotal() > adjustedHours() ? 'Overtime' : 'Regular' ) : 'Incomplete'}
                         </Text>
                     </Block>
 
