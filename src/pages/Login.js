@@ -28,7 +28,7 @@ export default function Login({ navigation }) {
 		
 		if (tenant) setSignOptions('employeeid');
 		
-		auth().onAuthStateChanged((user) => {
+		const subscriber = auth().onAuthStateChanged((user) => {
 			console.log(user);
 			console.log(tenant);
 			console.log(user_store);
@@ -47,6 +47,8 @@ export default function Login({ navigation }) {
 				}
 			}
 		});
+
+		return subscriber;
 	}, []);
 
 	const submit_user = () => { //Authenticate User
