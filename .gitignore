@@ -64,3 +64,5 @@ notes/
 .env
 
 google-services.json
+
+keys/
