@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import auth from '@react-native-firebase/auth';
 
-import { Block, Button, Icon, Input, NavBar, Text } from 'galio-framework';
+import { Block, Button, Icon, Input, NavBar, Text, Toast } from 'galio-framework';
 
 import theme from '../assets/theme';
 
@@ -21,6 +21,9 @@ export default function Login({ navigation }) {
 	const dispatch = useDispatch();
     const { tenant, loading: loading_tenant, errors: errors_tenant } = useSelector(state => state.tenantData);
     const { user: user_store, loading: loading_user, errors: errors_user } = useSelector(state => state.userData);
+	
+    const [ isFailure, setFailure ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('');
 
 	useEffect(() => {
 		console.log(loading_tenant);
@@ -82,6 +85,11 @@ export default function Login({ navigation }) {
 			})
 			.catch((err) => {
 				console.log(err);
+				setErrorMessage(err);
+				setFailure(true);
+                setTimeout(() => {
+                    setFailure(false);
+                }, 5000);
 			})
 			.finally(() => {
 				setCredentials({});
@@ -109,6 +117,10 @@ export default function Login({ navigation }) {
 
 	}
 
+	const display_error_text = (text) => {
+		return text || '';
+	}
+
     return (
         <Block safe flex style={{ backgroundColor: theme.COLORS.WHITE }}>
 			<Block style={{ marginTop: 20 }} />
@@ -127,6 +139,11 @@ export default function Login({ navigation }) {
 				)}
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
+
+			<Toast isShow={isFailure} positionIndicator="top" color="rgba(112, 8, 3, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+                children={
+                    <Text style={styles.toastText}>{errorMessage}</Text>
+                } />
 
 			{ loading_user
 			? (
@@ -294,5 +311,13 @@ const styles = StyleSheet.create({
         top: -17,
         right: -17,
         zIndex: 999
+    },
+	toast: {
+        position: 'absolute',
+        top: 0,
+        left: 0
+    },
+    toastText: {
+        color: '#fff'
     }
 });

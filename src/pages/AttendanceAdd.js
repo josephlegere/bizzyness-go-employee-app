@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Block, Button, Card, Icon, Input, NavBar, Toast, Text } from 'galio-framework';
+import { Block, Button, Icon, NavBar, Text, Toast } from 'galio-framework';
 import moment from 'moment';
 
 import DateTimeSelector from '../components/DateTimeSelector';
@@ -145,15 +145,17 @@ export default function AttendanceAdd({ navigation }) {
                 // onLeftPress={() => { navigation.goBack(); }}
                 style={{
                     backgroundColor: '#7a7a7a'
-                }} />
-                <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
-                children={
-                    <Text style={styles.toastText}>You have successfully Timed In!</Text>
-                } />
-                <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
-                children={
-                    <Text style={styles.toastText}>There was an error on submit!</Text>
-                } />
+                }}
+            />
+
+            <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            children={
+                <Text style={styles.toastText}>You have successfully Timed In!</Text>
+            } />
+            <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            children={
+                <Text style={styles.toastText}>There was an error on submit!</Text>
+            } />
 
             { loading
 			? (
