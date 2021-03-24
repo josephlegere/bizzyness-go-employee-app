@@ -48,7 +48,7 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
 
     try {
         
-        let { date, timings } = body;
+        let { date, timings, special_date } = body;
 
         let { tenantid, system_config, account } = tenant;
         let { uid, id, name } = user;
@@ -71,7 +71,8 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
             'server-type': system_config.server_type.type
         }
 
-        if (user.service_unique) data = { ...data, service_unique: user.service_unique };
+        if (user.service_unique) data.service_unique = user.service_unique;
+        if (special_date) data.special_date = special_date;
 
         if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api };
 

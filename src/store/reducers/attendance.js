@@ -161,6 +161,11 @@ function attendance_formatted (data) {
         
         // determine if its a weekend
         if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += 8;
+        else if (elem.hasOwnProperty('special_date')) {
+            let { type, hours } = elem.special_date;
+            if (type === 'holiday') hrTotal += 8;
+            else if (type === 'specialtiming') hrTotal += 6;
+        }
         
         // DON'T INCLUDE ANY CONDITION IF TIMING LIST HAS LENGTH GREATER THAN 0
         // loop through each sets then accumulate the work hours to a "variable" to determine attendance status
@@ -234,7 +239,11 @@ function attendance_formatted (data) {
         _obj['verify'] = elem.status;
 
         _obj['date'] = (elem.timings[0].input).substr(0, 10);
-        _obj['daytype'] = daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day()) ? 'Weekend' : 'Work Day';
+        _obj['daytype'] = (() => {
+            if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) return 'Weekend';
+            else if (elem.hasOwnProperty('special_date')) return elem.special_date.name;
+            return 'Work Day';
+        })();
 
         return _obj;
     });

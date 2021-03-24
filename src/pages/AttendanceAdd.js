@@ -21,7 +21,6 @@ export default function AttendanceAdd({ navigation }) {
     const { tenant } = useSelector(state => state.tenantData);
     const { user: user_store } = useSelector(state => state.userData);
     
-    const [ dayType, setDayType ] = useState('Work Day');
     const [ date, setDate ] = useState(moment().toDate());
     const [ timings, setTimings ] = useState([
         { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
@@ -69,11 +68,11 @@ export default function AttendanceAdd({ navigation }) {
             let { out, location } = elem;
             return { in: elem.in, out, location };
         });
+        let data = { date, timings: _timings };
 
-        console.log(date);
-        console.log(_timings);
+        if (specialDates[moment(date).format('YYYYMMDD')]) data.special_date = specialDates[moment(date).format('YYYYMMDD')];
 
-        dispatch(addAttendance({ date, timings: _timings }, tenant, user_store))
+        dispatch(addAttendance(data, tenant, user_store))
             .then(() => {
                 setSuccess(true);
                 setTimeout(() => {
@@ -164,6 +163,12 @@ export default function AttendanceAdd({ navigation }) {
         return requiredHours;
     }
 
+    const dayType = () => {
+        if (tenant.daysoff.some(_day => parseInt(_day.num) === moment(date).day())) return 'Day Off';
+        else if (specialDates[moment(date).format('YYYYMMDD')]) return specialDates[moment(date).format('YYYYMMDD')].name;
+        return 'Work Day';
+    }
+
     return (
         <Block flex>
             <NavBar
@@ -205,7 +210,7 @@ export default function AttendanceAdd({ navigation }) {
 			: (
                 <Block flex style={{ margin: theme.SIZES.BASE }}>
                     <Block style={styles.header}>
-                        <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType}</Text>
+                        <Text p size={18} style={{ color: theme.COLORS.BLACK }}>{dayType()}</Text>
                         <Text p bold style={ [hoursTotal() >= adjustedHours() ? ( hoursTotal() > adjustedHours() ? { color: 'blue' } : { color: 'green' }) : { color: 'red' } ]}>
                             {hoursTotal() > adjustedHours() ? `Hours: ${hoursTotal()} | ` : ''}{hoursTotal() >= adjustedHours() ? ( hoursTotal() > adjustedHours() ? 'Overtime' : 'Regular' ) : 'Incomplete'}
                         </Text>
