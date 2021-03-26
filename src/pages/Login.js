@@ -29,7 +29,7 @@ export default function Login({ navigation }) {
 		console.log(loading_tenant);
 		console.log(loading_user);
 		
-		if (tenant) setSignOptions('employeeid');
+		if (tenant && tenant.signin_options.hasOwnProperty('employeeid')) setSignOptions('employeeid');
 		
 		const subscriber = auth().onAuthStateChanged((user) => {
 			console.log(user);
@@ -227,7 +227,7 @@ export default function Login({ navigation }) {
 								Sign in
 							</Button>
 						</Block>
-						{ tenant
+						{ tenant && tenant.signin_options.hasOwnProperty('employeeid')
 						? (
 							<Block flex>
 							{ signOptions === 'emailandpassword'

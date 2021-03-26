@@ -40,7 +40,7 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
         
         let _user = { email, uid, name, id: `users/${uid}` };
 
-        let { account, tenantid, system_config, daysoff } = tenant_group;
+        let { account, tenantid, system_config, daysoff, signin_options } = tenant_group;
         let _tenant = {
             representative: {
                 uid,
@@ -49,7 +49,8 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
             account,
             tenantid,
             system_config,
-            daysoff
+            daysoff,
+            signin_options
         }
 
         if (employee_code) _user = { ..._user, employee_code };
@@ -130,7 +131,7 @@ export const signEmployeeidAndPassword = (access, tenant_source) => async dispat
         let { uid } = auth().currentUser; //displayName is for testing purposes
         let _user = { email, uid, name, id: `users/${uid}`, employee_code: employeeid };
 
-        let { account, tenantid, system_config, daysoff } = tenant_group;
+        let { account, tenantid, system_config, daysoff, signin_options } = tenant_group;
         let _tenant = {
             representative: {
                 uid,
@@ -139,7 +140,8 @@ export const signEmployeeidAndPassword = (access, tenant_source) => async dispat
             account,
             tenantid,
             system_config,
-            daysoff
+            daysoff,
+            signin_options
         };
 
         if (service_unique) _user = { ..._user, service_unique };
