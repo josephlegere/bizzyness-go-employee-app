@@ -14,10 +14,15 @@ export default function(state = initialState, action) {
         case GET_ATTENDANCE:
             let { attendance, daysoff } = action.payload;
             let _formatted = attendance_formatted({ attendance: attendance.list, daysoff });
+            let _sorted = _formatted.sort((a, b) => {
+                if (moment(a.date).isBefore(b.date)) return 1;
+                else if (moment(a.date).isAfter(b.date)) return -1;
+                return 0;
+            });
 
             return {
                 ...state,
-                attendance: _formatted,
+                attendance: _sorted,
                 loading: false
 
             }
