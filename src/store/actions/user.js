@@ -104,7 +104,7 @@ export const signEmployeeidAndPassword = (access, tenant_source) => async dispat
     
         let { employeeid, password } = access;
 
-        if (employeeid === '' || employeeid === null || password === '' || password === null || Object.keys(access).length === 0)  throw 'Please complete your credentials!';
+        if (employeeid === '' || employeeid === null || password === '' || password === null || Object.keys(access).length === 0) throw 'Please complete your credentials!';
 
         dispatch({
             type: USER_PROCESSING

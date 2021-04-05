@@ -7,7 +7,7 @@ import moment from 'moment';
 
 export default function DateTimeSelector(props, { navigation }) {
 
-    let { value, mode, format, onChange, width } = props;
+    let { value, mode, format, onChange, width, minimumDate, maximumDate } = props;
 
     const convertToProper = () => {
         let _datetime;
@@ -69,6 +69,8 @@ export default function DateTimeSelector(props, { navigation }) {
                     is24Hour={true}
                     display="default"
                     onChange={setDate}
+                    minimumDate={minimumDate || null}
+                    maximumDate={maximumDate || null}
                 />
             )}
         </Block>

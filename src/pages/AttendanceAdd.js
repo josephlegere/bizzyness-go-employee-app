@@ -220,7 +220,8 @@ export default function AttendanceAdd({ navigation }) {
                         <Block style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                             <DateTimeSelector
                                 value={date}
-                                // mode="time"
+                                minimumDate={moment().subtract(2, 'd').toDate()}
+                                maximumDate={moment().toDate()}
                                 onChange={(date) => setDate(date)}
                                 format="dddd MMM. D, YYYY"
                                 width={width * 0.55}

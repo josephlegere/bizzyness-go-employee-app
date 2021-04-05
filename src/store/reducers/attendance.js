@@ -164,7 +164,7 @@ function attendance_formatted (data) {
         let overtime_timings = { in: '', out: '' };
         overtime_timings.list = [];
         
-        // determine if its a weekend
+        // determine if its a weekend or a special date
         if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += 8;
         else if (elem.hasOwnProperty('special_date')) {
             let { type, hours } = elem.special_date;
