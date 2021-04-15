@@ -165,11 +165,11 @@ function attendance_formatted (data) {
         overtime_timings.list = [];
         
         // determine if its a weekend or a special date
-        if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += 8;
+        if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += workHours;
         else if (elem.hasOwnProperty('special_date')) {
             let { type, hours } = elem.special_date;
-            if (type === 'holiday') hrTotal += 8;
-            else if (type === 'specialtiming') hrTotal += 6;
+            if (type === 'holiday') hrTotal += workHours;
+            else if (type === 'specialtiming') workHours = 6;
         }
         
         // DON'T INCLUDE ANY CONDITION IF TIMING LIST HAS LENGTH GREATER THAN 0
