@@ -22,7 +22,7 @@ export const getAttendance = (tenant, user) => async dispatch => {
 
         if (user.service_unique) url += `?service_uid=${user.service_unique}`;
 
-        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api };
+        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api, 'server-timezone': system_config.timezone };
 
         const res = await axios.get(url, {
             headers
@@ -74,7 +74,7 @@ export const addAttendance = (body, tenant, user) => async dispatch => {
         if (user.service_unique) data.service_unique = user.service_unique;
         if (special_date) data.special_date = special_date;
 
-        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api };
+        if (system_config.server_host) headers = { ...headers, 'external-api': system_config.server_host.api, 'server-timezone': system_config.timezone };
 
         console.log(url);
         console.log(data);
