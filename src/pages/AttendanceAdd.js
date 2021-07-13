@@ -31,6 +31,7 @@ export default function AttendanceAdd({ navigation }) {
     const [ loading, setLoading ] = useState(false);
     const [ isSuccess, setSuccess ] = useState(false);
     const [ isFailure, setFailure ] = useState(false);
+    const [ errorMessage, setErrorMessage ] = useState('');
 
     const requiredHours = 8;
 
@@ -61,36 +62,50 @@ export default function AttendanceAdd({ navigation }) {
     }, [])
 
     const submit = () => {
-        
-        setLoading(true);
 
-        let _timings = timings.map(elem => {
-            let { out, location } = elem;
-            return { in: elem.in, out, location };
-        });
-        let data = { date, timings: _timings };
+        try {
+            setLoading(true);
 
-        if (specialDates[moment(date).format('YYYYMMDD')]) data.special_date = specialDates[moment(date).format('YYYYMMDD')];
-
-        dispatch(addAttendance(data, tenant, user_store))
-            .then(() => {
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                }, 5000);
-                setTimings([
-                    { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
-                    { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
-                ]);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setFailure(true);
-                setTimeout(() => {
-                    setFailure(false);
-                }, 5000);
+            let _date = moment(date).format('YYYY MM DD');
+            timings.forEach((elem) => {
+                if (moment(`${_date} ${elem.in}`, 'YYYY MM DD HH:mm:ss').isAfter(moment()) || moment(`${_date} ${elem.out}`, 'YYYY MM DD HH:mm:ss').isAfter(moment())) {
+                    throw 'Cannot input time exceeding current time.';
+                }
             });
+
+            let _timings = timings.map(elem => {
+                let { out, location } = elem;
+                return { in: elem.in, out, location };
+            });
+            let data = { date, timings: _timings };
+
+            if (specialDates[moment(date).format('YYYYMMDD')]) data.special_date = specialDates[moment(date).format('YYYYMMDD')];
+
+            dispatch(addAttendance(data, tenant, user_store))
+                .then(() => {
+                    setSuccess(true);
+                    setTimeout(() => {
+                        setSuccess(false);
+                    }, 5000);
+                    setTimings([
+                        { in: '05:30:00', out: '12:00:00', location: '', tags: ['Morning'] },
+                        { in: '16:00:00', out: '17:30:00', location: '', tags: ['Afternoon'] }
+                    ]);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    throw err;
+                });
+        }
+        catch (err) {
+            console.error(err);
+            setLoading(false);
+            setErrorMessage(err);
+            setFailure(true);
+            setTimeout(() => {
+                setFailure(false);
+            }, 10000);
+        }
 
     }
 
@@ -198,7 +213,7 @@ export default function AttendanceAdd({ navigation }) {
             } />
             <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
             children={
-                <Text style={styles.toastText}>There was an error on submit!</Text>
+                <Text style={styles.toastText}>There was an error on submit! {errorMessage}</Text>
             } />
 
             { loading
