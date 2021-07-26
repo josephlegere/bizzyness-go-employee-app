@@ -139,6 +139,8 @@ export default function AttendanceAdd({ navigation }) {
         let _hoursTotal = 0;
         timings = sortTiming(timings);
         return timings.map((timing) => {
+            
+            if (timing.out === '00:00:00') timing.out = '24:00:00';
 
             if (moment(timing.in, 'HH:mm:ss').isBefore(moment('12:00:00', 'HH:mm:ss'))) {
                 timing.tags = timing.tags.filter((_item, _index) => _item !== 'Afternoon');
