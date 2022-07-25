@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Button, Icon, NavBar, Text, Toast } from 'galio-framework';
 import moment from 'moment';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -17,6 +18,7 @@ const { height, width } = Dimensions.get('window');
 
 export default function AttendanceAdd({ navigation }) {
 
+    const insets = useSafeAreaInsets();
 	const dispatch = useDispatch();
     const { tenant } = useSelector(state => state.tenantData);
     const { user: user_store } = useSelector(state => state.userData);
@@ -205,7 +207,8 @@ export default function AttendanceAdd({ navigation }) {
                 }}
                 // onLeftPress={() => { navigation.goBack(); }}
                 style={{
-                    backgroundColor: '#7a7a7a'
+                    backgroundColor: '#7a7a7a',
+                    paddingTop: insets.top
                 }}
             />
 
@@ -250,7 +253,6 @@ export default function AttendanceAdd({ navigation }) {
                             data={timings}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
-                            ListFooterComponent={<Block style={{ height: 200 }}></Block>}
                             ListHeaderComponent={<Block style={{ height: 5 }}></Block>}
                         />
 

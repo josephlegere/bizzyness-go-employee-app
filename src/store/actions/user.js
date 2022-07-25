@@ -17,7 +17,7 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
             type: USER_PROCESSING
         });
 
-        console.log(tenant_source);
+        console.log('tenant_source', tenant_source);
 
         let loggedUser = await firestore().collection('users')
             .where('email', '==', email)

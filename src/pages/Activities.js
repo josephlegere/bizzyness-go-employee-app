@@ -10,6 +10,67 @@ import theme from '../assets/theme';
 import { getAttendance } from '../store/actions/attendance';
 
 const { height, width } = Dimensions.get('window');
+	
+const Activity = (props) => {
+	
+	const { attend } = props;
+
+	return (
+		<Block
+			flex
+			borderless
+			style={styles.card}
+		>
+			<Block style={styles.cardHeader}>
+				<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
+				<Text p style={{ color: theme.COLORS.WHITE }}>{attend.workstatus}</Text>
+			</Block>
+			<Block style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
+				<Text size={18} style={{ color: theme.COLORS.WHITE }}>{attend.daytype}</Text>
+			</Block>
+			<Block style={{ marginBottom: 10 }}>
+				<Block style={styles.row}>
+					<Block style={styles.col}>
+						<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Day</Text>
+						{attend.timings.day_min && attend.timings.day_min.map((day, day_id) => (
+							<Text size={18} key={day_id} style={{ color: theme.COLORS.WHITE }}>{day}</Text>
+						))}
+					</Block>
+					<Block style={styles.col}>
+						<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Noon</Text>
+						{attend.timings.noon_min && attend.timings.noon_min.map((noon, noon_id) => (
+							<Text size={18} key={noon_id} style={{ color: theme.COLORS.WHITE }}>{noon}</Text>
+						))}
+					</Block>
+				</Block>
+			</Block>
+			
+			{attend.ottimings.length > 0 ?
+			<Block style={{ marginBottom: 10 }}>
+				<Text style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>
+					<Text size={20} bold>Overtime&nbsp;</Text>
+					<Text size={16}> - {attend.othours} Hours</Text>
+				</Text>
+				<Block style={{ maxHeight: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
+					{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
+						<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
+					))}
+				</Block>
+			</Block> : <Block></Block>}
+
+			{attend.locations !== '' ?
+			<Text style={{ color: theme.COLORS.WHITE, marginBottom: 10 }}>
+				<Icon name="location-pin" family="entypo" color="#fff" size={20} />
+				{/* <Text size={20} bold>Location: </Text> */}
+				<Text size={16}>{attend.locations}</Text>
+			</Text> : <Block></Block>}
+			<Block style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 5 }}>
+				<Text size={15} style={{ color: theme.COLORS.WHITE, marginRight: 15 }}>{attend.verify}</Text>
+				<Icon name="dots-three-vertical" family="entypo" color="#fff" size={18} onPress={() => console.log('Activity Settings')} />
+			</Block>
+		</Block>
+	)
+}
 
 export default function Activities({ navigation }) {
 	const [refreshing, setRefreshing] = React.useState(false);
@@ -32,67 +93,6 @@ export default function Activities({ navigation }) {
 	}
 
 	// console.log(attendance);
-	
-	const Activity = (props) => {
-		
-		let { attend } = props;
-
-		return (
-			<Block
-				flex
-				borderless
-				style={styles.card}
-			>
-				<Block style={styles.cardHeader}>
-					<Text h6 style={{ color: theme.COLORS.WHITE }}>{moment(attend.date).format('ddd MMM DD, YYYY')}</Text>
-					<Text p style={{ color: theme.COLORS.WHITE }}>{attend.workstatus}</Text>
-				</Block>
-				<Block style={{ marginBottom: 10, flexDirection: 'row', justifyContent: 'flex-start' }}>
-					<Text size={18} style={{ color: theme.COLORS.WHITE }}>{attend.daytype}</Text>
-				</Block>
-				<Block style={{ marginBottom: 10 }}>
-					<Block style={styles.row}>
-						<Block style={styles.col}>
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Day</Text>
-							{attend.timings.day_min && attend.timings.day_min.map((day, day_id) => (
-								<Text size={18} key={day_id} style={{ color: theme.COLORS.WHITE }}>{day}</Text>
-							))}
-						</Block>
-						<Block style={styles.col}>
-							<Text size={20} bold style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>Noon</Text>
-							{attend.timings.noon_min && attend.timings.noon_min.map((noon, noon_id) => (
-								<Text size={18} key={noon_id} style={{ color: theme.COLORS.WHITE }}>{noon}</Text>
-							))}
-						</Block>
-					</Block>
-				</Block>
-				
-				{attend.ottimings.length > 0 ?
-				<Block style={{ marginBottom: 10 }}>
-					<Text style={{ color: theme.COLORS.WHITE, marginBottom: 5 }}>
-						<Text size={20} bold>Overtime&nbsp;</Text>
-						<Text size={16}> - {attend.othours} Hours</Text>
-					</Text>
-					<Block style={{ maxHeight: 80, flexWrap: 'wrap', flexDirection: 'column', alignContent: 'space-between', marginBottom: 10 }}>
-						{attend.ottimings && attend.ottimings.map((ot, ot_id) => (
-							<Text size={18} key={ot_id} style={{ color: theme.COLORS.WHITE }}>{ot}</Text>
-						))}
-					</Block>
-				</Block> : <Block></Block>}
-
-				{attend.locations !== '' ?
-				<Text style={{ color: theme.COLORS.WHITE, marginBottom: 10 }}>
-					<Icon name="location-pin" family="entypo" color="#fff" size={20} />
-					{/* <Text size={20} bold>Location: </Text> */}
-					<Text size={16}>{attend.locations}</Text>
-				</Text> : <Block></Block>}
-				<Block style={{flexDirection: 'row', justifyContent: 'flex-end', marginTop: 5 }}>
-					<Text size={15} style={{ color: theme.COLORS.WHITE, marginRight: 15 }}>{attend.verify}</Text>
-                    <Icon name="dots-three-vertical" family="entypo" color="#fff" size={18} onPress={() => console.log('Activity Settings')} />
-				</Block>
-			</Block>
-		)
-	}
 
 	// const timein = () => {
 	// 	console.log('Time In!');

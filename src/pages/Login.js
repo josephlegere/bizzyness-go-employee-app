@@ -220,7 +220,7 @@ export default function Login({ navigation }) {
 							)}
 							<Button
 								round
-								color="error"
+								color="#914c06"
 								onPress={submit_user}
 								style={{ alignSelf: 'center' }}
 							>

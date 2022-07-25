@@ -33,7 +33,8 @@ export default function Dashboard() {
 					return <Icon name={iconName} family="ionicons" color={color} size={size} />;
 				},
 				tabBarActiveTintColor: '#663b0e',
-				tabBarInactiveTintColor: 'gray'
+				tabBarInactiveTintColor: 'gray',
+				headerShown: false
 			})}
 		>
 			<Tab.Screen name="Activities" component={Activities} />
