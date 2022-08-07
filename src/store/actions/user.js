@@ -3,28 +3,22 @@ import { AUTH_USER, USER_PROCESSING, USER_LOGOUT, USER_ERROR, AUTH_TENANT, ATTEN
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-import * as RootNavigation from '../../plugins/RootNavigation';
-
-export const signEmailAndPassword = (access, tenant_source) => async dispatch => {
+export const signEmailAndPassword = (access, tenant) => async dispatch => {
     
     let { email, password } = access;
 
     try {
 
-        if (email === '' || email === null || password === '' || password === null || Object.keys(access).length === 0)  throw 'Please complete your credentials!';
+        if (email === '' || email === null || password === '' || password === null || Object.keys(access).length === 0) throw 'Please complete your credentials!';
 
         dispatch({
             type: USER_PROCESSING
         });
 
+        const { tenantid: tenant_source = null } = tenant || {};
         console.log('tenant_source', tenant_source);
 
-        let loggedUser = await firestore().collection('users')
-            .where('email', '==', email)
-            .where('tenant_group.tenantid', '==', tenant_source)
-            .get();
-
-        if (tenant_source && loggedUser.empty) throw 'This user doesn\'t represent this company!';
+        if (tenant && tenant.hasOwnProperty('employees') && !Object.values(tenant.employees).some(e => e.email === email)) throw 'This user doesn\'t represent this company!';
 
         await auth().signInWithEmailAndPassword(email, password);
             
@@ -40,6 +34,15 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
         
         let _user = { email, uid, name, id: `users/${uid}` };
 
+        let employees = {};
+        let empSnap = await firestore()
+            .collection(`${tenant_group.tenantid}/employees`)
+            .get();
+
+        empSnap.forEach(doc => {
+            employees[doc.id] = doc.data();
+        });
+
         let { account, tenantid, system_config, daysoff, signin_options } = tenant_group;
         let _tenant = {
             representative: {
@@ -50,7 +53,8 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
             tenantid,
             system_config,
             daysoff,
-            signin_options
+            signin_options,
+            employees
         }
 
         if (employee_code) _user = { ..._user, employee_code };
@@ -61,12 +65,10 @@ export const signEmailAndPassword = (access, tenant_source) => async dispatch =>
             payload: _user
         });
 
-        if (!tenant_source) {
-            dispatch({
-                type: AUTH_TENANT,
-                payload: _tenant
-            });
-        }
+        dispatch({
+            type: AUTH_TENANT,
+            payload: _tenant
+        });
 
     }
     catch (err) {

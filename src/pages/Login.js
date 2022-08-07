@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 
 import { Block, Button, Icon, Input, NavBar, Text, Toast } from 'galio-framework';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import theme from '../assets/theme';
 
@@ -15,6 +16,9 @@ import { USER_TASK_FINISHED } from '../store/types';
 const { height, width } = Dimensions.get('window');
 
 export default function Login({ navigation }) {
+
+	const insets = useSafeAreaInsets();
+	
 	const [ signOptions, setSignOptions ] = useState('emailandpassword');
 	const [ credentials, setCredentials ] = useState({});
 	const [ configVisible, setConfigVisible] = useState(false);
@@ -26,76 +30,71 @@ export default function Login({ navigation }) {
     const [ errorMessage, setErrorMessage ] = useState('');
 
 	useEffect(() => {
-		console.log(loading_tenant);
-		console.log(loading_user);
-		
 		if (tenant && tenant.signin_options.hasOwnProperty('employeeid')) setSignOptions('employeeid');
-		
+
+		dispatch({
+			type: USER_TASK_FINISHED
+		});
+	}, []);
+
+	useEffect(() => {
 		const subscriber = auth().onAuthStateChanged((user) => {
-			console.log(user);
-			console.log(tenant);
-			console.log(user_store);
+			console.log('user', user);
+			console.log('tenant', tenant);
+			console.log('user_store', user_store);
 
-			dispatch({
-				type: USER_TASK_FINISHED
-			});
-
-			if (user_store) {
-
-				if (user) {
-					navigation.reset({
-						index: 0,
-						routes: [{ name: 'Home' }],
-					});
-				}
+			if (user_store && user) {
+				navigation.reset({
+					index: 0,
+					routes: [{ name: 'Home' }],
+				});
 			}
 		});
 
 		return subscriber;
-	}, []);
+	}, [user_store]);
 
 	const submit_user = () => { //Authenticate User
 
-		let tenantid = tenant ? tenant.tenantid : null ;
+		console.log(credentials);
+		const { email, password, employeeid } = credentials;
+		let _email = email;
 
-		console.log(credentials, tenantid);
+		try {
+			if (signOptions === 'employeeid') {
 
-		if (signOptions === 'employeeid') {
-			dispatch(signEmployeeidAndPassword(credentials, tenantid))
-			.then(() => {
-				navigation.reset({
-					index: 0,
-					routes: [{ name: 'Home' }],
+				const _employee = Object.values(tenant.employees).find(e => e.employee_code === employeeid);
+				
+				if (!_employee) throw 'This user doesn\'t represent this company!';
+				else _email = _employee.email;
+			}
+			
+			dispatch(signEmailAndPassword({ email: _email, password }, tenant))
+				.then(() => {
+					// navigation.reset({
+					// 	index: 0,
+					// 	routes: [{ name: 'Home' }],
+					// });
+					setCredentials({});
+				})
+				.catch((err) => {
+					console.log(err);
+					setErrorMessage(err);
+					setFailure(true);
+					setTimeout(() => {
+						setFailure(false);
+					}, 5000);
 				});
-			})
-			.catch((err) => {
-				console.log(err);
-			})
-			.finally(() => {
-				setCredentials({});
-			});
 		}
-		else {
-			dispatch(signEmailAndPassword(credentials, tenantid))
-			.then(() => {
-				navigation.reset({
-					index: 0,
-					routes: [{ name: 'Home' }],
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-				setErrorMessage(err);
-				setFailure(true);
-                setTimeout(() => {
-                    setFailure(false);
-                }, 5000);
-			})
-			.finally(() => {
-				setCredentials({});
-			});
+		catch (err) {
+			console.log(err);
+			setErrorMessage(err);
+			setFailure(true);
+			setTimeout(() => {
+				setFailure(false);
+			}, 5000);
 		}
-		// Can't add navigation here as credentials need to be authenticated first, and verify if user has access to the tenant
+		// Can't add redirect here as credentials need to be authenticated first, and verify if user has access to the tenant
 		// navigation.navigate('Home');
 
 	}
@@ -140,7 +139,7 @@ export default function Login({ navigation }) {
 				style={Platform.OS === 'android' ? { marginTop: theme.SIZES.BASE } : { marginTop: theme.SIZES.BASE }}
 			/>
 
-			<Toast isShow={isFailure} positionIndicator="top" color="rgba(112, 8, 3, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+			<Toast isShow={isFailure} positionIndicator="top" color="rgba(112, 8, 3, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={[styles.toast, { paddingTop: insets.top }]}
                 children={
                     <Text style={styles.toastText}>{errorMessage}</Text>
                 } />

@@ -212,11 +212,11 @@ export default function AttendanceAdd({ navigation }) {
                 }}
             />
 
-            <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={[styles.toast, { paddingTop: insets.top }]}
             children={
                 <Text style={styles.toastText}>You have successfully Timed In!</Text>
             } />
-            <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={[styles.toast, { paddingTop: insets.top }]}
             children={
                 <Text style={styles.toastText}>There was an error on submit! {errorMessage}</Text>
             } />
