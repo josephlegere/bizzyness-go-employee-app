@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import theme from '../assets/theme';
 
-import DateTimeSelector from './DateTimeSelector';
+import DateTimeSelector from './datetimeselector';
 import Chips from './Chips';
 
 const { height, width } = Dimensions.get('window');

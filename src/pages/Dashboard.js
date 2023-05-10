@@ -31,12 +31,11 @@ export default function Dashboard() {
 
 					// You can return any component that you like here!
 					return <Icon name={iconName} family="ionicons" color={color} size={size} />;
-				}
+				},
+				tabBarActiveTintColor: '#663b0e',
+				tabBarInactiveTintColor: 'gray',
+				headerShown: false
 			})}
-			tabBarOptions={{
-				activeTintColor: '#663b0e',
-				inactiveTintColor: 'gray',
-			}}
 		>
 			<Tab.Screen name="Activities" component={Activities} />
 			<Tab.Screen name="Personalize" component={Personalize} />
