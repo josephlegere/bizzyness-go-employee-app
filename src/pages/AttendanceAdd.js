@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Block, Button, Icon, NavBar, Text, Toast } from 'galio-framework';
 import moment from 'moment';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import firestore from '@react-native-firebase/firestore';
 
-import DateTimeSelector from '../components/DateTimeSelector';
-import AttendItemSet from '../components/AttendItemSet';
+import DateTimeSelector from '../components/datetimeselector';
+import AttendItemSet from '../components/attenditemset';
 import theme from '../assets/theme';
 
 import { addAttendance } from '../store/actions/attendance';
@@ -17,6 +18,7 @@ const { height, width } = Dimensions.get('window');
 
 export default function AttendanceAdd({ navigation }) {
 
+    const insets = useSafeAreaInsets();
 	const dispatch = useDispatch();
     const { tenant } = useSelector(state => state.tenantData);
     const { user: user_store } = useSelector(state => state.userData);
@@ -205,15 +207,16 @@ export default function AttendanceAdd({ navigation }) {
                 }}
                 // onLeftPress={() => { navigation.goBack(); }}
                 style={{
-                    backgroundColor: '#7a7a7a'
+                    backgroundColor: '#7a7a7a',
+                    paddingTop: insets.top
                 }}
             />
 
-            <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            <Toast isShow={isSuccess} positionIndicator="top" color="rgba(48, 48, 48, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={[styles.toast, { paddingTop: insets.top }]}
             children={
                 <Text style={styles.toastText}>You have successfully Timed In!</Text>
             } />
-            <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={styles.toast}
+            <Toast isShow={isFailure} positionIndicator="top" color="rgba(145, 76, 6, 0.87)" fadeInDuration={1000} fadeOutDuration={1000} style={[styles.toast, { paddingTop: insets.top }]}
             children={
                 <Text style={styles.toastText}>There was an error on submit! {errorMessage}</Text>
             } />
@@ -250,7 +253,6 @@ export default function AttendanceAdd({ navigation }) {
                             data={timings}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({item, index}) => <AttendItemSet attend={item} index={index} remove={removeTimeInSet} updateList={changeAttendDetails} />}
-                            ListFooterComponent={<Block style={{ height: 200 }}></Block>}
                             ListHeaderComponent={<Block style={{ height: 5 }}></Block>}
                         />
 

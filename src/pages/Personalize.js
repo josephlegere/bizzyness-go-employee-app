@@ -30,7 +30,7 @@ export default function Personalize({ navigation }) {
 	}
 
     return (
-        <Block flex>
+        <Block safe flex>
             { !user_store
 			? (
 				<Block flex style={{ justifyContent: "center" }}>
@@ -79,7 +79,8 @@ export default function Personalize({ navigation }) {
                         // color="error"
                         onPress={logout_user}
                         size="large"
-                        style={{ alignSelf: 'center', backgroundColor: '#914c06' }}
+                        color="#914c06"
+                        style={{ alignSelf: 'center' }}
                     >
                         Log Out
                     </Button>

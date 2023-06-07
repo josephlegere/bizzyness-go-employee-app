@@ -12,17 +12,18 @@ export default function(state = initialState, action) {
     switch (action.type) {
 
         case GET_ATTENDANCE:
-            let { attendance, daysoff } = action.payload;
-            let _formatted = attendance_formatted({ attendance: attendance.list, daysoff });
-            let _sorted = _formatted.sort((a, b) => {
+            const { attendance, daysoff, update } = action.payload;
+            const _formatted = attendance_formatted({ attendance, daysoff });
+            const _sorted = _formatted.sort((a, b) => {
                 if (moment(a.date).isBefore(b.date)) return 1;
                 else if (moment(a.date).isAfter(b.date)) return -1;
                 return 0;
             });
+            const _attendance = !update ? _sorted : [..._sorted, ...state.attendance];
 
             return {
                 ...state,
-                attendance: _sorted,
+                attendance: _attendance,
                 loading: false
 
             }
@@ -165,7 +166,7 @@ function attendance_formatted (data) {
         overtime_timings.list = [];
         
         // determine if its a weekend or a special date
-        if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += workHours;
+        if (daysoff && daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) hrTotal += workHours;
         else if (elem.hasOwnProperty('special_date')) {
             let { type, hours } = elem.special_date;
             if (type === 'holiday') hrTotal += workHours;
@@ -245,7 +246,7 @@ function attendance_formatted (data) {
 
         _obj['date'] = (elem.timings[0].input).substr(0, 10);
         _obj['daytype'] = (() => {
-            if (daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) return 'Weekend';
+            if (daysoff && daysoff.some(_day => _day.num === moment((elem.timings[0].input).substr(0, 10)).day())) return 'Weekend';
             else if (elem.hasOwnProperty('special_date')) return elem.special_date.name;
             return 'Work Day';
         })();

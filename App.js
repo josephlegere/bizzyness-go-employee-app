@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
@@ -23,28 +15,28 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { navigationRef } from './src/plugins/RootNavigation';
 
 const App: () => React$Node = () => {
-	
-	// console.log(store.getState());
 
-	return (
-		<Provider store={store}>
-			<PersistGate loading={null} persistor={persistor}>
-				<>
-					<NavigationContainer ref={navigationRef}>
-						<Stack.Navigator
-							screenOptions={{
-								headerShown: false
-							}}
-						>
-							<Stack.Screen name="Login" component={Login} />
-							<Stack.Screen name="Home" component={Dashboard} />
-							<Stack.Screen name="Add Attendance" component={AttendanceAdd} />
-						</Stack.Navigator>
-					</NavigationContainer>
-				</>
-			</PersistGate>
-		</Provider>
-	);
+  // console.log(store.getState());
+
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <>
+          <NavigationContainer ref={navigationRef}>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false
+              }}
+            >
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Home" component={Dashboard} />
+              <Stack.Screen name="Add Attendance" component={AttendanceAdd} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </>
+      </PersistGate>
+    </Provider>
+  );
 };
 
 export default App;
