@@ -24,6 +24,7 @@ export const getAttendance = (tenant, user) => async dispatch => {
         // console.log('attendance', res.data.data.attendance);
 
         const attendance_res = await axios.post(`${ROOT_URL}${ATTENDANCE}`, { st: "logged in", dt: "today", ur: user?.service_unique });
+        
         if (!attendance_res?.data) throw 'Error: retrieving attendance';
 
         const { attendance_list: attendance } = attendance_res.data;
